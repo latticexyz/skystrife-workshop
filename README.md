@@ -11,9 +11,7 @@
 
 ### Reading tables
 
-Use [RECS](https://mud.dev/client-side) to read the state of tables on the World. All of the Sky Strife tables can be found in the public [MUD config](https://github.com/latticexyz/skystrife-leaderboard/blob/main/packages/contracts-skystrife/mud.config).
-
-**Note:** although all tables are defined on the client, only specific tables are actually hydrated to reduce load times. The client will not warn you and these tables will appear empty. To ensure a table is loaded in the client, add to the `TABLES` array in `setupNetwork`.
+Use MUD [Zustand hooks](https://github.com/latticexyz/mud/pull/1843) to read the state of tables on the World. All of the Sky Strife tables can be found in the public [MUD config](https://github.com/latticexyz/skystrife-workshop/blob/main/packages/contracts-skystrife/mud.config.ts).
 
 ### Reading different worlds
 
