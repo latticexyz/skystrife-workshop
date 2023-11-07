@@ -1,28 +1,39 @@
 import { MUDChain, mudFoundry } from "@latticexyz/common/chains";
 
-type SkyStrifeChain = MUDChain & {
-    indexerUrl?: string;
-};
-
 export const redstone = {
-    name: "Redstone Testnet",
-    id: 894,
-    network: "redstone-testnet",
-    nativeCurrency: { decimals: 18, name: "Ether", symbol: "ETH" },
+    id: 17001,
+    name: "Redstone Holesky",
+    network: "redstone-holesky",
+    summary: {
+        location: "Holesky",
+    },
+    description: "Redstone Holesky",
+    iconUrl:
+        "https://images.ctfassets.net/q5ulk4bp65r7/3TBS4oVkD1ghowTqVQJlqj/2dfd4ea3b623a7c0d8deb2ff445dee9e/Consumer_Wordmark.svg",
+    nativeCurrency: {
+        decimals: 18,
+        name: "Holesky Ether",
+        symbol: "ETH",
+    },
     rpcUrls: {
         default: {
-            http: ["https://894.quarry.linfra.xyz"],
-            webSocket: ["wss://894.quarry.linfra.xyz/ws"],
+            http: ["https://17001-follower.quarry.linfra.xyz"],
+            webSocket: ["wss://17001-follower.quarry.linfra.xyz/ws"],
         },
         public: {
-            http: ["https://894.quarry.linfra.xyz"],
-            webSocket: ["wss://894.quarry.linfra.xyz/ws"],
+            http: ["https://17001-follower.quarry.linfra.xyz"],
+            webSocket: ["wss://17001-follower.quarry.linfra.xyz/ws"],
         },
     },
-    faucetUrl: "https://894-faucet.quarry.linfra.xyz/trpc",
-    indexerUrl: "https://894-indexer.quarry.linfra.xyz/trpc",
-} as const satisfies SkyStrifeChain;
+    blockExplorers: {
+        default: {
+            name: "Blockscout",
+            url: "https://17001-explorer.quarry.linfra.xyz",
+        },
+    },
+    testnet: true,
+};
 
 
 // If you are deploying to chains other than anvil or Lattice testnet, add them here
-export const supportedChains: SkyStrifeChain[] = [mudFoundry, redstone];
+export const supportedChains: MUDChain[] = [mudFoundry, redstone];
