@@ -21,15 +21,15 @@ import { ResourceId } from "@latticexyz/store/src/ResourceId.sol";
 import { RESOURCE_TABLE, RESOURCE_OFFCHAIN_TABLE } from "@latticexyz/store/src/storeResourceTypes.sol";
 
 ResourceId constant _tableId = ResourceId.wrap(
-  bytes32(abi.encodePacked(RESOURCE_TABLE, bytes14(""), bytes16("LevelTables")))
+  bytes32(abi.encodePacked(RESOURCE_TABLE, bytes14(""), bytes16("LevelPositionInd")))
 );
-ResourceId constant LevelTablesTableId = _tableId;
+ResourceId constant LevelPositionIndexTableId = _tableId;
 
 FieldLayout constant _fieldLayout = FieldLayout.wrap(
   0x0000000100000000000000000000000000000000000000000000000000000000
 );
 
-library LevelTables {
+library LevelPositionIndex {
   /**
    * @notice Get the table values' field layout.
    * @return _fieldLayout The field layout for the table.
@@ -43,9 +43,10 @@ library LevelTables {
    * @return _keySchema The key schema for the table.
    */
   function getKeySchema() internal pure returns (Schema) {
-    SchemaType[] memory _keySchema = new SchemaType[](2);
+    SchemaType[] memory _keySchema = new SchemaType[](3);
     _keySchema[0] = SchemaType.BYTES32;
-    _keySchema[1] = SchemaType.UINT256;
+    _keySchema[1] = SchemaType.INT32;
+    _keySchema[2] = SchemaType.INT32;
 
     return SchemaLib.encode(_keySchema);
   }
@@ -56,7 +57,7 @@ library LevelTables {
    */
   function getValueSchema() internal pure returns (Schema) {
     SchemaType[] memory _valueSchema = new SchemaType[](1);
-    _valueSchema[0] = SchemaType.BYTES32_ARRAY;
+    _valueSchema[0] = SchemaType.UINT256_ARRAY;
 
     return SchemaLib.encode(_valueSchema);
   }
@@ -66,9 +67,10 @@ library LevelTables {
    * @return keyNames An array of strings with the names of key fields.
    */
   function getKeyNames() internal pure returns (string[] memory keyNames) {
-    keyNames = new string[](2);
+    keyNames = new string[](3);
     keyNames[0] = "levelId";
-    keyNames[1] = "index";
+    keyNames[1] = "x";
+    keyNames[2] = "y";
   }
 
   /**
@@ -97,58 +99,63 @@ library LevelTables {
   /**
    * @notice Get value.
    */
-  function getValue(bytes32 levelId, uint256 index) internal view returns (bytes32[] memory value) {
-    bytes32[] memory _keyTuple = new bytes32[](2);
+  function getValue(bytes32 levelId, int32 x, int32 y) internal view returns (uint256[] memory value) {
+    bytes32[] memory _keyTuple = new bytes32[](3);
     _keyTuple[0] = levelId;
-    _keyTuple[1] = bytes32(uint256(index));
+    _keyTuple[1] = bytes32(uint256(int256(x)));
+    _keyTuple[2] = bytes32(uint256(int256(y)));
 
     bytes memory _blob = StoreSwitch.getDynamicField(_tableId, _keyTuple, 0);
-    return (SliceLib.getSubslice(_blob, 0, _blob.length).decodeArray_bytes32());
+    return (SliceLib.getSubslice(_blob, 0, _blob.length).decodeArray_uint256());
   }
 
   /**
    * @notice Get value.
    */
-  function _getValue(bytes32 levelId, uint256 index) internal view returns (bytes32[] memory value) {
-    bytes32[] memory _keyTuple = new bytes32[](2);
+  function _getValue(bytes32 levelId, int32 x, int32 y) internal view returns (uint256[] memory value) {
+    bytes32[] memory _keyTuple = new bytes32[](3);
     _keyTuple[0] = levelId;
-    _keyTuple[1] = bytes32(uint256(index));
+    _keyTuple[1] = bytes32(uint256(int256(x)));
+    _keyTuple[2] = bytes32(uint256(int256(y)));
 
     bytes memory _blob = StoreCore.getDynamicField(_tableId, _keyTuple, 0);
-    return (SliceLib.getSubslice(_blob, 0, _blob.length).decodeArray_bytes32());
+    return (SliceLib.getSubslice(_blob, 0, _blob.length).decodeArray_uint256());
   }
 
   /**
    * @notice Get value.
    */
-  function get(bytes32 levelId, uint256 index) internal view returns (bytes32[] memory value) {
-    bytes32[] memory _keyTuple = new bytes32[](2);
+  function get(bytes32 levelId, int32 x, int32 y) internal view returns (uint256[] memory value) {
+    bytes32[] memory _keyTuple = new bytes32[](3);
     _keyTuple[0] = levelId;
-    _keyTuple[1] = bytes32(uint256(index));
+    _keyTuple[1] = bytes32(uint256(int256(x)));
+    _keyTuple[2] = bytes32(uint256(int256(y)));
 
     bytes memory _blob = StoreSwitch.getDynamicField(_tableId, _keyTuple, 0);
-    return (SliceLib.getSubslice(_blob, 0, _blob.length).decodeArray_bytes32());
+    return (SliceLib.getSubslice(_blob, 0, _blob.length).decodeArray_uint256());
   }
 
   /**
    * @notice Get value.
    */
-  function _get(bytes32 levelId, uint256 index) internal view returns (bytes32[] memory value) {
-    bytes32[] memory _keyTuple = new bytes32[](2);
+  function _get(bytes32 levelId, int32 x, int32 y) internal view returns (uint256[] memory value) {
+    bytes32[] memory _keyTuple = new bytes32[](3);
     _keyTuple[0] = levelId;
-    _keyTuple[1] = bytes32(uint256(index));
+    _keyTuple[1] = bytes32(uint256(int256(x)));
+    _keyTuple[2] = bytes32(uint256(int256(y)));
 
     bytes memory _blob = StoreCore.getDynamicField(_tableId, _keyTuple, 0);
-    return (SliceLib.getSubslice(_blob, 0, _blob.length).decodeArray_bytes32());
+    return (SliceLib.getSubslice(_blob, 0, _blob.length).decodeArray_uint256());
   }
 
   /**
    * @notice Set value.
    */
-  function setValue(bytes32 levelId, uint256 index, bytes32[] memory value) internal {
-    bytes32[] memory _keyTuple = new bytes32[](2);
+  function setValue(bytes32 levelId, int32 x, int32 y, uint256[] memory value) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
     _keyTuple[0] = levelId;
-    _keyTuple[1] = bytes32(uint256(index));
+    _keyTuple[1] = bytes32(uint256(int256(x)));
+    _keyTuple[2] = bytes32(uint256(int256(y)));
 
     StoreSwitch.setDynamicField(_tableId, _keyTuple, 0, EncodeArray.encode((value)));
   }
@@ -156,10 +163,11 @@ library LevelTables {
   /**
    * @notice Set value.
    */
-  function _setValue(bytes32 levelId, uint256 index, bytes32[] memory value) internal {
-    bytes32[] memory _keyTuple = new bytes32[](2);
+  function _setValue(bytes32 levelId, int32 x, int32 y, uint256[] memory value) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
     _keyTuple[0] = levelId;
-    _keyTuple[1] = bytes32(uint256(index));
+    _keyTuple[1] = bytes32(uint256(int256(x)));
+    _keyTuple[2] = bytes32(uint256(int256(y)));
 
     StoreCore.setDynamicField(_tableId, _keyTuple, 0, EncodeArray.encode((value)));
   }
@@ -167,10 +175,11 @@ library LevelTables {
   /**
    * @notice Set value.
    */
-  function set(bytes32 levelId, uint256 index, bytes32[] memory value) internal {
-    bytes32[] memory _keyTuple = new bytes32[](2);
+  function set(bytes32 levelId, int32 x, int32 y, uint256[] memory value) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
     _keyTuple[0] = levelId;
-    _keyTuple[1] = bytes32(uint256(index));
+    _keyTuple[1] = bytes32(uint256(int256(x)));
+    _keyTuple[2] = bytes32(uint256(int256(y)));
 
     StoreSwitch.setDynamicField(_tableId, _keyTuple, 0, EncodeArray.encode((value)));
   }
@@ -178,10 +187,11 @@ library LevelTables {
   /**
    * @notice Set value.
    */
-  function _set(bytes32 levelId, uint256 index, bytes32[] memory value) internal {
-    bytes32[] memory _keyTuple = new bytes32[](2);
+  function _set(bytes32 levelId, int32 x, int32 y, uint256[] memory value) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
     _keyTuple[0] = levelId;
-    _keyTuple[1] = bytes32(uint256(index));
+    _keyTuple[1] = bytes32(uint256(int256(x)));
+    _keyTuple[2] = bytes32(uint256(int256(y)));
 
     StoreCore.setDynamicField(_tableId, _keyTuple, 0, EncodeArray.encode((value)));
   }
@@ -189,10 +199,11 @@ library LevelTables {
   /**
    * @notice Get the length of value.
    */
-  function lengthValue(bytes32 levelId, uint256 index) internal view returns (uint256) {
-    bytes32[] memory _keyTuple = new bytes32[](2);
+  function lengthValue(bytes32 levelId, int32 x, int32 y) internal view returns (uint256) {
+    bytes32[] memory _keyTuple = new bytes32[](3);
     _keyTuple[0] = levelId;
-    _keyTuple[1] = bytes32(uint256(index));
+    _keyTuple[1] = bytes32(uint256(int256(x)));
+    _keyTuple[2] = bytes32(uint256(int256(y)));
 
     uint256 _byteLength = StoreSwitch.getDynamicFieldLength(_tableId, _keyTuple, 0);
     unchecked {
@@ -203,10 +214,11 @@ library LevelTables {
   /**
    * @notice Get the length of value.
    */
-  function _lengthValue(bytes32 levelId, uint256 index) internal view returns (uint256) {
-    bytes32[] memory _keyTuple = new bytes32[](2);
+  function _lengthValue(bytes32 levelId, int32 x, int32 y) internal view returns (uint256) {
+    bytes32[] memory _keyTuple = new bytes32[](3);
     _keyTuple[0] = levelId;
-    _keyTuple[1] = bytes32(uint256(index));
+    _keyTuple[1] = bytes32(uint256(int256(x)));
+    _keyTuple[2] = bytes32(uint256(int256(y)));
 
     uint256 _byteLength = StoreCore.getDynamicFieldLength(_tableId, _keyTuple, 0);
     unchecked {
@@ -217,10 +229,11 @@ library LevelTables {
   /**
    * @notice Get the length of value.
    */
-  function length(bytes32 levelId, uint256 index) internal view returns (uint256) {
-    bytes32[] memory _keyTuple = new bytes32[](2);
+  function length(bytes32 levelId, int32 x, int32 y) internal view returns (uint256) {
+    bytes32[] memory _keyTuple = new bytes32[](3);
     _keyTuple[0] = levelId;
-    _keyTuple[1] = bytes32(uint256(index));
+    _keyTuple[1] = bytes32(uint256(int256(x)));
+    _keyTuple[2] = bytes32(uint256(int256(y)));
 
     uint256 _byteLength = StoreSwitch.getDynamicFieldLength(_tableId, _keyTuple, 0);
     unchecked {
@@ -231,10 +244,11 @@ library LevelTables {
   /**
    * @notice Get the length of value.
    */
-  function _length(bytes32 levelId, uint256 index) internal view returns (uint256) {
-    bytes32[] memory _keyTuple = new bytes32[](2);
+  function _length(bytes32 levelId, int32 x, int32 y) internal view returns (uint256) {
+    bytes32[] memory _keyTuple = new bytes32[](3);
     _keyTuple[0] = levelId;
-    _keyTuple[1] = bytes32(uint256(index));
+    _keyTuple[1] = bytes32(uint256(int256(x)));
+    _keyTuple[2] = bytes32(uint256(int256(y)));
 
     uint256 _byteLength = StoreCore.getDynamicFieldLength(_tableId, _keyTuple, 0);
     unchecked {
@@ -246,14 +260,15 @@ library LevelTables {
    * @notice Get an item of value.
    * @dev Reverts with Store_IndexOutOfBounds if `_index` is out of bounds for the array.
    */
-  function getItemValue(bytes32 levelId, uint256 index, uint256 _index) internal view returns (bytes32) {
-    bytes32[] memory _keyTuple = new bytes32[](2);
+  function getItemValue(bytes32 levelId, int32 x, int32 y, uint256 _index) internal view returns (uint256) {
+    bytes32[] memory _keyTuple = new bytes32[](3);
     _keyTuple[0] = levelId;
-    _keyTuple[1] = bytes32(uint256(index));
+    _keyTuple[1] = bytes32(uint256(int256(x)));
+    _keyTuple[2] = bytes32(uint256(int256(y)));
 
     unchecked {
       bytes memory _blob = StoreSwitch.getDynamicFieldSlice(_tableId, _keyTuple, 0, _index * 32, (_index + 1) * 32);
-      return (bytes32(_blob));
+      return (uint256(bytes32(_blob)));
     }
   }
 
@@ -261,14 +276,15 @@ library LevelTables {
    * @notice Get an item of value.
    * @dev Reverts with Store_IndexOutOfBounds if `_index` is out of bounds for the array.
    */
-  function _getItemValue(bytes32 levelId, uint256 index, uint256 _index) internal view returns (bytes32) {
-    bytes32[] memory _keyTuple = new bytes32[](2);
+  function _getItemValue(bytes32 levelId, int32 x, int32 y, uint256 _index) internal view returns (uint256) {
+    bytes32[] memory _keyTuple = new bytes32[](3);
     _keyTuple[0] = levelId;
-    _keyTuple[1] = bytes32(uint256(index));
+    _keyTuple[1] = bytes32(uint256(int256(x)));
+    _keyTuple[2] = bytes32(uint256(int256(y)));
 
     unchecked {
       bytes memory _blob = StoreCore.getDynamicFieldSlice(_tableId, _keyTuple, 0, _index * 32, (_index + 1) * 32);
-      return (bytes32(_blob));
+      return (uint256(bytes32(_blob)));
     }
   }
 
@@ -276,14 +292,15 @@ library LevelTables {
    * @notice Get an item of value.
    * @dev Reverts with Store_IndexOutOfBounds if `_index` is out of bounds for the array.
    */
-  function getItem(bytes32 levelId, uint256 index, uint256 _index) internal view returns (bytes32) {
-    bytes32[] memory _keyTuple = new bytes32[](2);
+  function getItem(bytes32 levelId, int32 x, int32 y, uint256 _index) internal view returns (uint256) {
+    bytes32[] memory _keyTuple = new bytes32[](3);
     _keyTuple[0] = levelId;
-    _keyTuple[1] = bytes32(uint256(index));
+    _keyTuple[1] = bytes32(uint256(int256(x)));
+    _keyTuple[2] = bytes32(uint256(int256(y)));
 
     unchecked {
       bytes memory _blob = StoreSwitch.getDynamicFieldSlice(_tableId, _keyTuple, 0, _index * 32, (_index + 1) * 32);
-      return (bytes32(_blob));
+      return (uint256(bytes32(_blob)));
     }
   }
 
@@ -291,24 +308,26 @@ library LevelTables {
    * @notice Get an item of value.
    * @dev Reverts with Store_IndexOutOfBounds if `_index` is out of bounds for the array.
    */
-  function _getItem(bytes32 levelId, uint256 index, uint256 _index) internal view returns (bytes32) {
-    bytes32[] memory _keyTuple = new bytes32[](2);
+  function _getItem(bytes32 levelId, int32 x, int32 y, uint256 _index) internal view returns (uint256) {
+    bytes32[] memory _keyTuple = new bytes32[](3);
     _keyTuple[0] = levelId;
-    _keyTuple[1] = bytes32(uint256(index));
+    _keyTuple[1] = bytes32(uint256(int256(x)));
+    _keyTuple[2] = bytes32(uint256(int256(y)));
 
     unchecked {
       bytes memory _blob = StoreCore.getDynamicFieldSlice(_tableId, _keyTuple, 0, _index * 32, (_index + 1) * 32);
-      return (bytes32(_blob));
+      return (uint256(bytes32(_blob)));
     }
   }
 
   /**
    * @notice Push an element to value.
    */
-  function pushValue(bytes32 levelId, uint256 index, bytes32 _element) internal {
-    bytes32[] memory _keyTuple = new bytes32[](2);
+  function pushValue(bytes32 levelId, int32 x, int32 y, uint256 _element) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
     _keyTuple[0] = levelId;
-    _keyTuple[1] = bytes32(uint256(index));
+    _keyTuple[1] = bytes32(uint256(int256(x)));
+    _keyTuple[2] = bytes32(uint256(int256(y)));
 
     StoreSwitch.pushToDynamicField(_tableId, _keyTuple, 0, abi.encodePacked((_element)));
   }
@@ -316,10 +335,11 @@ library LevelTables {
   /**
    * @notice Push an element to value.
    */
-  function _pushValue(bytes32 levelId, uint256 index, bytes32 _element) internal {
-    bytes32[] memory _keyTuple = new bytes32[](2);
+  function _pushValue(bytes32 levelId, int32 x, int32 y, uint256 _element) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
     _keyTuple[0] = levelId;
-    _keyTuple[1] = bytes32(uint256(index));
+    _keyTuple[1] = bytes32(uint256(int256(x)));
+    _keyTuple[2] = bytes32(uint256(int256(y)));
 
     StoreCore.pushToDynamicField(_tableId, _keyTuple, 0, abi.encodePacked((_element)));
   }
@@ -327,10 +347,11 @@ library LevelTables {
   /**
    * @notice Push an element to value.
    */
-  function push(bytes32 levelId, uint256 index, bytes32 _element) internal {
-    bytes32[] memory _keyTuple = new bytes32[](2);
+  function push(bytes32 levelId, int32 x, int32 y, uint256 _element) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
     _keyTuple[0] = levelId;
-    _keyTuple[1] = bytes32(uint256(index));
+    _keyTuple[1] = bytes32(uint256(int256(x)));
+    _keyTuple[2] = bytes32(uint256(int256(y)));
 
     StoreSwitch.pushToDynamicField(_tableId, _keyTuple, 0, abi.encodePacked((_element)));
   }
@@ -338,10 +359,11 @@ library LevelTables {
   /**
    * @notice Push an element to value.
    */
-  function _push(bytes32 levelId, uint256 index, bytes32 _element) internal {
-    bytes32[] memory _keyTuple = new bytes32[](2);
+  function _push(bytes32 levelId, int32 x, int32 y, uint256 _element) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
     _keyTuple[0] = levelId;
-    _keyTuple[1] = bytes32(uint256(index));
+    _keyTuple[1] = bytes32(uint256(int256(x)));
+    _keyTuple[2] = bytes32(uint256(int256(y)));
 
     StoreCore.pushToDynamicField(_tableId, _keyTuple, 0, abi.encodePacked((_element)));
   }
@@ -349,10 +371,11 @@ library LevelTables {
   /**
    * @notice Pop an element from value.
    */
-  function popValue(bytes32 levelId, uint256 index) internal {
-    bytes32[] memory _keyTuple = new bytes32[](2);
+  function popValue(bytes32 levelId, int32 x, int32 y) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
     _keyTuple[0] = levelId;
-    _keyTuple[1] = bytes32(uint256(index));
+    _keyTuple[1] = bytes32(uint256(int256(x)));
+    _keyTuple[2] = bytes32(uint256(int256(y)));
 
     StoreSwitch.popFromDynamicField(_tableId, _keyTuple, 0, 32);
   }
@@ -360,10 +383,11 @@ library LevelTables {
   /**
    * @notice Pop an element from value.
    */
-  function _popValue(bytes32 levelId, uint256 index) internal {
-    bytes32[] memory _keyTuple = new bytes32[](2);
+  function _popValue(bytes32 levelId, int32 x, int32 y) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
     _keyTuple[0] = levelId;
-    _keyTuple[1] = bytes32(uint256(index));
+    _keyTuple[1] = bytes32(uint256(int256(x)));
+    _keyTuple[2] = bytes32(uint256(int256(y)));
 
     StoreCore.popFromDynamicField(_tableId, _keyTuple, 0, 32);
   }
@@ -371,10 +395,11 @@ library LevelTables {
   /**
    * @notice Pop an element from value.
    */
-  function pop(bytes32 levelId, uint256 index) internal {
-    bytes32[] memory _keyTuple = new bytes32[](2);
+  function pop(bytes32 levelId, int32 x, int32 y) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
     _keyTuple[0] = levelId;
-    _keyTuple[1] = bytes32(uint256(index));
+    _keyTuple[1] = bytes32(uint256(int256(x)));
+    _keyTuple[2] = bytes32(uint256(int256(y)));
 
     StoreSwitch.popFromDynamicField(_tableId, _keyTuple, 0, 32);
   }
@@ -382,10 +407,11 @@ library LevelTables {
   /**
    * @notice Pop an element from value.
    */
-  function _pop(bytes32 levelId, uint256 index) internal {
-    bytes32[] memory _keyTuple = new bytes32[](2);
+  function _pop(bytes32 levelId, int32 x, int32 y) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
     _keyTuple[0] = levelId;
-    _keyTuple[1] = bytes32(uint256(index));
+    _keyTuple[1] = bytes32(uint256(int256(x)));
+    _keyTuple[2] = bytes32(uint256(int256(y)));
 
     StoreCore.popFromDynamicField(_tableId, _keyTuple, 0, 32);
   }
@@ -393,10 +419,11 @@ library LevelTables {
   /**
    * @notice Update an element of value at `_index`.
    */
-  function updateValue(bytes32 levelId, uint256 index, uint256 _index, bytes32 _element) internal {
-    bytes32[] memory _keyTuple = new bytes32[](2);
+  function updateValue(bytes32 levelId, int32 x, int32 y, uint256 _index, uint256 _element) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
     _keyTuple[0] = levelId;
-    _keyTuple[1] = bytes32(uint256(index));
+    _keyTuple[1] = bytes32(uint256(int256(x)));
+    _keyTuple[2] = bytes32(uint256(int256(y)));
 
     unchecked {
       bytes memory _encoded = abi.encodePacked((_element));
@@ -407,10 +434,11 @@ library LevelTables {
   /**
    * @notice Update an element of value at `_index`.
    */
-  function _updateValue(bytes32 levelId, uint256 index, uint256 _index, bytes32 _element) internal {
-    bytes32[] memory _keyTuple = new bytes32[](2);
+  function _updateValue(bytes32 levelId, int32 x, int32 y, uint256 _index, uint256 _element) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
     _keyTuple[0] = levelId;
-    _keyTuple[1] = bytes32(uint256(index));
+    _keyTuple[1] = bytes32(uint256(int256(x)));
+    _keyTuple[2] = bytes32(uint256(int256(y)));
 
     unchecked {
       bytes memory _encoded = abi.encodePacked((_element));
@@ -421,10 +449,11 @@ library LevelTables {
   /**
    * @notice Update an element of value at `_index`.
    */
-  function update(bytes32 levelId, uint256 index, uint256 _index, bytes32 _element) internal {
-    bytes32[] memory _keyTuple = new bytes32[](2);
+  function update(bytes32 levelId, int32 x, int32 y, uint256 _index, uint256 _element) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
     _keyTuple[0] = levelId;
-    _keyTuple[1] = bytes32(uint256(index));
+    _keyTuple[1] = bytes32(uint256(int256(x)));
+    _keyTuple[2] = bytes32(uint256(int256(y)));
 
     unchecked {
       bytes memory _encoded = abi.encodePacked((_element));
@@ -435,10 +464,11 @@ library LevelTables {
   /**
    * @notice Update an element of value at `_index`.
    */
-  function _update(bytes32 levelId, uint256 index, uint256 _index, bytes32 _element) internal {
-    bytes32[] memory _keyTuple = new bytes32[](2);
+  function _update(bytes32 levelId, int32 x, int32 y, uint256 _index, uint256 _element) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
     _keyTuple[0] = levelId;
-    _keyTuple[1] = bytes32(uint256(index));
+    _keyTuple[1] = bytes32(uint256(int256(x)));
+    _keyTuple[2] = bytes32(uint256(int256(y)));
 
     unchecked {
       bytes memory _encoded = abi.encodePacked((_element));
@@ -449,10 +479,11 @@ library LevelTables {
   /**
    * @notice Delete all data for given keys.
    */
-  function deleteRecord(bytes32 levelId, uint256 index) internal {
-    bytes32[] memory _keyTuple = new bytes32[](2);
+  function deleteRecord(bytes32 levelId, int32 x, int32 y) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
     _keyTuple[0] = levelId;
-    _keyTuple[1] = bytes32(uint256(index));
+    _keyTuple[1] = bytes32(uint256(int256(x)));
+    _keyTuple[2] = bytes32(uint256(int256(y)));
 
     StoreSwitch.deleteRecord(_tableId, _keyTuple);
   }
@@ -460,10 +491,11 @@ library LevelTables {
   /**
    * @notice Delete all data for given keys.
    */
-  function _deleteRecord(bytes32 levelId, uint256 index) internal {
-    bytes32[] memory _keyTuple = new bytes32[](2);
+  function _deleteRecord(bytes32 levelId, int32 x, int32 y) internal {
+    bytes32[] memory _keyTuple = new bytes32[](3);
     _keyTuple[0] = levelId;
-    _keyTuple[1] = bytes32(uint256(index));
+    _keyTuple[1] = bytes32(uint256(int256(x)));
+    _keyTuple[2] = bytes32(uint256(int256(y)));
 
     StoreCore.deleteRecord(_tableId, _keyTuple, _fieldLayout);
   }
@@ -472,7 +504,7 @@ library LevelTables {
    * @notice Tightly pack dynamic data lengths using this table's schema.
    * @return _encodedLengths The lengths of the dynamic fields (packed into a single bytes32 value).
    */
-  function encodeLengths(bytes32[] memory value) internal pure returns (PackedCounter _encodedLengths) {
+  function encodeLengths(uint256[] memory value) internal pure returns (PackedCounter _encodedLengths) {
     // Lengths are effectively checked during copy by 2**40 bytes exceeding gas limits
     unchecked {
       _encodedLengths = PackedCounterLib.pack(value.length * 32);
@@ -483,7 +515,7 @@ library LevelTables {
    * @notice Tightly pack dynamic (variable length) data using this table's schema.
    * @return The dynamic data, encoded into a sequence of bytes.
    */
-  function encodeDynamic(bytes32[] memory value) internal pure returns (bytes memory) {
+  function encodeDynamic(uint256[] memory value) internal pure returns (bytes memory) {
     return abi.encodePacked(EncodeArray.encode((value)));
   }
 
@@ -493,7 +525,7 @@ library LevelTables {
    * @return The lengths of the dynamic fields (packed into a single bytes32 value).
    * @return The dyanmic (variable length) data, encoded into a sequence of bytes.
    */
-  function encode(bytes32[] memory value) internal pure returns (bytes memory, PackedCounter, bytes memory) {
+  function encode(uint256[] memory value) internal pure returns (bytes memory, PackedCounter, bytes memory) {
     bytes memory _staticData;
     PackedCounter _encodedLengths = encodeLengths(value);
     bytes memory _dynamicData = encodeDynamic(value);
@@ -504,10 +536,11 @@ library LevelTables {
   /**
    * @notice Encode keys as a bytes32 array using this table's field layout.
    */
-  function encodeKeyTuple(bytes32 levelId, uint256 index) internal pure returns (bytes32[] memory) {
-    bytes32[] memory _keyTuple = new bytes32[](2);
+  function encodeKeyTuple(bytes32 levelId, int32 x, int32 y) internal pure returns (bytes32[] memory) {
+    bytes32[] memory _keyTuple = new bytes32[](3);
     _keyTuple[0] = levelId;
-    _keyTuple[1] = bytes32(uint256(index));
+    _keyTuple[1] = bytes32(uint256(int256(x)));
+    _keyTuple[2] = bytes32(uint256(int256(y)));
 
     return _keyTuple;
   }

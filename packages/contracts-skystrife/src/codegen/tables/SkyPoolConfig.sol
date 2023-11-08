@@ -26,13 +26,15 @@ ResourceId constant _tableId = ResourceId.wrap(
 ResourceId constant SkyPoolConfigTableId = _tableId;
 
 FieldLayout constant _fieldLayout = FieldLayout.wrap(
-  0x0054030020201400000000000000000000000000000000000000000000000000
+  0x007c050020201414140000000000000000000000000000000000000000000000
 );
 
 struct SkyPoolConfigData {
   uint256 cost;
   uint256 window;
-  address token;
+  address orbToken;
+  address seasonPassToken;
+  address skyKeyToken;
 }
 
 library SkyPoolConfig {
@@ -59,10 +61,12 @@ library SkyPoolConfig {
    * @return _valueSchema The value schema for the table.
    */
   function getValueSchema() internal pure returns (Schema) {
-    SchemaType[] memory _valueSchema = new SchemaType[](3);
+    SchemaType[] memory _valueSchema = new SchemaType[](5);
     _valueSchema[0] = SchemaType.UINT256;
     _valueSchema[1] = SchemaType.UINT256;
     _valueSchema[2] = SchemaType.ADDRESS;
+    _valueSchema[3] = SchemaType.ADDRESS;
+    _valueSchema[4] = SchemaType.ADDRESS;
 
     return SchemaLib.encode(_valueSchema);
   }
@@ -80,10 +84,12 @@ library SkyPoolConfig {
    * @return fieldNames An array of strings with the names of value fields.
    */
   function getFieldNames() internal pure returns (string[] memory fieldNames) {
-    fieldNames = new string[](3);
+    fieldNames = new string[](5);
     fieldNames[0] = "cost";
     fieldNames[1] = "window";
-    fieldNames[2] = "token";
+    fieldNames[2] = "orbToken";
+    fieldNames[3] = "seasonPassToken";
+    fieldNames[4] = "skyKeyToken";
   }
 
   /**
@@ -177,9 +183,9 @@ library SkyPoolConfig {
   }
 
   /**
-   * @notice Get token.
+   * @notice Get orbToken.
    */
-  function getToken() internal view returns (address token) {
+  function getOrbToken() internal view returns (address orbToken) {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
     bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 2, _fieldLayout);
@@ -187,9 +193,9 @@ library SkyPoolConfig {
   }
 
   /**
-   * @notice Get token.
+   * @notice Get orbToken.
    */
-  function _getToken() internal view returns (address token) {
+  function _getOrbToken() internal view returns (address orbToken) {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
     bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 2, _fieldLayout);
@@ -197,21 +203,97 @@ library SkyPoolConfig {
   }
 
   /**
-   * @notice Set token.
+   * @notice Set orbToken.
    */
-  function setToken(address token) internal {
+  function setOrbToken(address orbToken) internal {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
-    StoreSwitch.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked((token)), _fieldLayout);
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked((orbToken)), _fieldLayout);
   }
 
   /**
-   * @notice Set token.
+   * @notice Set orbToken.
    */
-  function _setToken(address token) internal {
+  function _setOrbToken(address orbToken) internal {
     bytes32[] memory _keyTuple = new bytes32[](0);
 
-    StoreCore.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked((token)), _fieldLayout);
+    StoreCore.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked((orbToken)), _fieldLayout);
+  }
+
+  /**
+   * @notice Get seasonPassToken.
+   */
+  function getSeasonPassToken() internal view returns (address seasonPassToken) {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 3, _fieldLayout);
+    return (address(bytes20(_blob)));
+  }
+
+  /**
+   * @notice Get seasonPassToken.
+   */
+  function _getSeasonPassToken() internal view returns (address seasonPassToken) {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 3, _fieldLayout);
+    return (address(bytes20(_blob)));
+  }
+
+  /**
+   * @notice Set seasonPassToken.
+   */
+  function setSeasonPassToken(address seasonPassToken) internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 3, abi.encodePacked((seasonPassToken)), _fieldLayout);
+  }
+
+  /**
+   * @notice Set seasonPassToken.
+   */
+  function _setSeasonPassToken(address seasonPassToken) internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    StoreCore.setStaticField(_tableId, _keyTuple, 3, abi.encodePacked((seasonPassToken)), _fieldLayout);
+  }
+
+  /**
+   * @notice Get skyKeyToken.
+   */
+  function getSkyKeyToken() internal view returns (address skyKeyToken) {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 4, _fieldLayout);
+    return (address(bytes20(_blob)));
+  }
+
+  /**
+   * @notice Get skyKeyToken.
+   */
+  function _getSkyKeyToken() internal view returns (address skyKeyToken) {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 4, _fieldLayout);
+    return (address(bytes20(_blob)));
+  }
+
+  /**
+   * @notice Set skyKeyToken.
+   */
+  function setSkyKeyToken(address skyKeyToken) internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 4, abi.encodePacked((skyKeyToken)), _fieldLayout);
+  }
+
+  /**
+   * @notice Set skyKeyToken.
+   */
+  function _setSkyKeyToken(address skyKeyToken) internal {
+    bytes32[] memory _keyTuple = new bytes32[](0);
+
+    StoreCore.setStaticField(_tableId, _keyTuple, 4, abi.encodePacked((skyKeyToken)), _fieldLayout);
   }
 
   /**
@@ -245,8 +327,8 @@ library SkyPoolConfig {
   /**
    * @notice Set the full data using individual values.
    */
-  function set(uint256 cost, uint256 window, address token) internal {
-    bytes memory _staticData = encodeStatic(cost, window, token);
+  function set(uint256 cost, uint256 window, address orbToken, address seasonPassToken, address skyKeyToken) internal {
+    bytes memory _staticData = encodeStatic(cost, window, orbToken, seasonPassToken, skyKeyToken);
 
     PackedCounter _encodedLengths;
     bytes memory _dynamicData;
@@ -259,8 +341,8 @@ library SkyPoolConfig {
   /**
    * @notice Set the full data using individual values.
    */
-  function _set(uint256 cost, uint256 window, address token) internal {
-    bytes memory _staticData = encodeStatic(cost, window, token);
+  function _set(uint256 cost, uint256 window, address orbToken, address seasonPassToken, address skyKeyToken) internal {
+    bytes memory _staticData = encodeStatic(cost, window, orbToken, seasonPassToken, skyKeyToken);
 
     PackedCounter _encodedLengths;
     bytes memory _dynamicData;
@@ -274,7 +356,13 @@ library SkyPoolConfig {
    * @notice Set the full data using the data struct.
    */
   function set(SkyPoolConfigData memory _table) internal {
-    bytes memory _staticData = encodeStatic(_table.cost, _table.window, _table.token);
+    bytes memory _staticData = encodeStatic(
+      _table.cost,
+      _table.window,
+      _table.orbToken,
+      _table.seasonPassToken,
+      _table.skyKeyToken
+    );
 
     PackedCounter _encodedLengths;
     bytes memory _dynamicData;
@@ -288,7 +376,13 @@ library SkyPoolConfig {
    * @notice Set the full data using the data struct.
    */
   function _set(SkyPoolConfigData memory _table) internal {
-    bytes memory _staticData = encodeStatic(_table.cost, _table.window, _table.token);
+    bytes memory _staticData = encodeStatic(
+      _table.cost,
+      _table.window,
+      _table.orbToken,
+      _table.seasonPassToken,
+      _table.skyKeyToken
+    );
 
     PackedCounter _encodedLengths;
     bytes memory _dynamicData;
@@ -301,12 +395,22 @@ library SkyPoolConfig {
   /**
    * @notice Decode the tightly packed blob of static data using this table's field layout.
    */
-  function decodeStatic(bytes memory _blob) internal pure returns (uint256 cost, uint256 window, address token) {
+  function decodeStatic(
+    bytes memory _blob
+  )
+    internal
+    pure
+    returns (uint256 cost, uint256 window, address orbToken, address seasonPassToken, address skyKeyToken)
+  {
     cost = (uint256(Bytes.slice32(_blob, 0)));
 
     window = (uint256(Bytes.slice32(_blob, 32)));
 
-    token = (address(Bytes.slice20(_blob, 64)));
+    orbToken = (address(Bytes.slice20(_blob, 64)));
+
+    seasonPassToken = (address(Bytes.slice20(_blob, 84)));
+
+    skyKeyToken = (address(Bytes.slice20(_blob, 104)));
   }
 
   /**
@@ -320,7 +424,9 @@ library SkyPoolConfig {
     PackedCounter,
     bytes memory
   ) internal pure returns (SkyPoolConfigData memory _table) {
-    (_table.cost, _table.window, _table.token) = decodeStatic(_staticData);
+    (_table.cost, _table.window, _table.orbToken, _table.seasonPassToken, _table.skyKeyToken) = decodeStatic(
+      _staticData
+    );
   }
 
   /**
@@ -345,8 +451,14 @@ library SkyPoolConfig {
    * @notice Tightly pack static (fixed length) data using this table's schema.
    * @return The static data, encoded into a sequence of bytes.
    */
-  function encodeStatic(uint256 cost, uint256 window, address token) internal pure returns (bytes memory) {
-    return abi.encodePacked(cost, window, token);
+  function encodeStatic(
+    uint256 cost,
+    uint256 window,
+    address orbToken,
+    address seasonPassToken,
+    address skyKeyToken
+  ) internal pure returns (bytes memory) {
+    return abi.encodePacked(cost, window, orbToken, seasonPassToken, skyKeyToken);
   }
 
   /**
@@ -358,9 +470,11 @@ library SkyPoolConfig {
   function encode(
     uint256 cost,
     uint256 window,
-    address token
+    address orbToken,
+    address seasonPassToken,
+    address skyKeyToken
   ) internal pure returns (bytes memory, PackedCounter, bytes memory) {
-    bytes memory _staticData = encodeStatic(cost, window, token);
+    bytes memory _staticData = encodeStatic(cost, window, orbToken, seasonPassToken, skyKeyToken);
 
     PackedCounter _encodedLengths;
     bytes memory _dynamicData;

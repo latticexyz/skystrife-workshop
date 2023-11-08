@@ -24,6 +24,7 @@
     "@latticexyz/world": "2.0.0-main-161c1a85",
     "autoprefixer": "^10.4.15",
     "contracts-skystrife": "workspace:*",
+    "contracts": "workspace:*",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "rxjs": "7.5.5",

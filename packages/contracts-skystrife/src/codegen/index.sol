@@ -39,7 +39,6 @@ import { Name, NameTableId } from "./tables/Name.sol";
 import { Admin, AdminTableId } from "./tables/Admin.sol";
 import { HeroInRotation, HeroInRotationTableId } from "./tables/HeroInRotation.sol";
 import { HeroInSeasonPassRotation, HeroInSeasonPassRotationTableId } from "./tables/HeroInSeasonPassRotation.sol";
-import { SeasonPass, SeasonPassTableId } from "./tables/SeasonPass.sol";
 import { SkyPoolConfig, SkyPoolConfigData, SkyPoolConfigTableId } from "./tables/SkyPoolConfig.sol";
 import { MatchRewardPercentages, MatchRewardPercentagesTableId } from "./tables/MatchRewardPercentages.sol";
 import { LevelInStandardRotation, LevelInStandardRotationTableId } from "./tables/LevelInStandardRotation.sol";
@@ -47,6 +46,8 @@ import { LevelInSeasonPassRotation, LevelInSeasonPassRotationTableId } from "./t
 import { LastMatchIndex, LastMatchIndexTableId } from "./tables/LastMatchIndex.sol";
 import { MatchIndex, MatchIndexTableId } from "./tables/MatchIndex.sol";
 import { MatchIndexToEntity, MatchIndexToEntityTableId } from "./tables/MatchIndexToEntity.sol";
+import { SeasonPassIndex, SeasonPassIndexTableId } from "./tables/SeasonPassIndex.sol";
+import { SeasonPassPrice, SeasonPassPriceTableId } from "./tables/SeasonPassPrice.sol";
 import { MatchEntityCounter, MatchEntityCounterTableId } from "./tables/MatchEntityCounter.sol";
 import { MatchSpawnPoints, MatchSpawnPointsTableId } from "./tables/MatchSpawnPoints.sol";
 import { MatchPlayers, MatchPlayersTableId } from "./tables/MatchPlayers.sol";
@@ -64,7 +65,6 @@ import { TemplateTables, TemplateTablesTableId } from "./tables/TemplateTables.s
 import { TemplateContent, TemplateContentTableId } from "./tables/TemplateContent.sol";
 import { LevelTemplates, LevelTemplatesTableId } from "./tables/LevelTemplates.sol";
 import { LevelTemplatesIndex, LevelTemplatesIndexTableId } from "./tables/LevelTemplatesIndex.sol";
-import { LevelTables, LevelTablesTableId } from "./tables/LevelTables.sol";
-import { LevelContent, LevelContentTableId } from "./tables/LevelContent.sol";
-import { LevelContentIndex, LevelContentIndexTableId } from "./tables/LevelContentIndex.sol";
+import { LevelPosition, LevelPositionTableId } from "./tables/LevelPosition.sol";
+import { LevelPositionIndex, LevelPositionIndexTableId } from "./tables/LevelPositionIndex.sol";
 import { VirtualLevelTemplates, VirtualLevelTemplatesTableId } from "./tables/VirtualLevelTemplates.sol";

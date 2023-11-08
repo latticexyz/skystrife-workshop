@@ -21,15 +21,15 @@ import { ResourceId } from "@latticexyz/store/src/ResourceId.sol";
 import { RESOURCE_TABLE, RESOURCE_OFFCHAIN_TABLE } from "@latticexyz/store/src/storeResourceTypes.sol";
 
 ResourceId constant _tableId = ResourceId.wrap(
-  bytes32(abi.encodePacked(RESOURCE_TABLE, bytes14(""), bytes16("SeasonPass")))
+  bytes32(abi.encodePacked(RESOURCE_TABLE, bytes14("League"), bytes16("AccountInLeague")))
 );
-ResourceId constant SeasonPassTableId = _tableId;
+ResourceId constant AccountInLeagueTableId = _tableId;
 
 FieldLayout constant _fieldLayout = FieldLayout.wrap(
   0x0001010001000000000000000000000000000000000000000000000000000000
 );
 
-library SeasonPass {
+library AccountInLeague {
   /**
    * @notice Get the table values' field layout.
    * @return _fieldLayout The field layout for the table.
@@ -75,7 +75,7 @@ library SeasonPass {
    */
   function getFieldNames() internal pure returns (string[] memory fieldNames) {
     fieldNames = new string[](1);
-    fieldNames[0] = "hasSeasonPass";
+    fieldNames[0] = "inLeague";
   }
 
   /**
@@ -93,9 +93,9 @@ library SeasonPass {
   }
 
   /**
-   * @notice Get hasSeasonPass.
+   * @notice Get inLeague.
    */
-  function getHasSeasonPass(address account) internal view returns (bool hasSeasonPass) {
+  function getInLeague(address account) internal view returns (bool inLeague) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(uint160(account)));
 
@@ -104,9 +104,9 @@ library SeasonPass {
   }
 
   /**
-   * @notice Get hasSeasonPass.
+   * @notice Get inLeague.
    */
-  function _getHasSeasonPass(address account) internal view returns (bool hasSeasonPass) {
+  function _getInLeague(address account) internal view returns (bool inLeague) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(uint160(account)));
 
@@ -115,9 +115,9 @@ library SeasonPass {
   }
 
   /**
-   * @notice Get hasSeasonPass.
+   * @notice Get inLeague.
    */
-  function get(address account) internal view returns (bool hasSeasonPass) {
+  function get(address account) internal view returns (bool inLeague) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(uint160(account)));
 
@@ -126,9 +126,9 @@ library SeasonPass {
   }
 
   /**
-   * @notice Get hasSeasonPass.
+   * @notice Get inLeague.
    */
-  function _get(address account) internal view returns (bool hasSeasonPass) {
+  function _get(address account) internal view returns (bool inLeague) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(uint160(account)));
 
@@ -137,43 +137,43 @@ library SeasonPass {
   }
 
   /**
-   * @notice Set hasSeasonPass.
+   * @notice Set inLeague.
    */
-  function setHasSeasonPass(address account, bool hasSeasonPass) internal {
+  function setInLeague(address account, bool inLeague) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(uint160(account)));
 
-    StoreSwitch.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((hasSeasonPass)), _fieldLayout);
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((inLeague)), _fieldLayout);
   }
 
   /**
-   * @notice Set hasSeasonPass.
+   * @notice Set inLeague.
    */
-  function _setHasSeasonPass(address account, bool hasSeasonPass) internal {
+  function _setInLeague(address account, bool inLeague) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(uint160(account)));
 
-    StoreCore.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((hasSeasonPass)), _fieldLayout);
+    StoreCore.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((inLeague)), _fieldLayout);
   }
 
   /**
-   * @notice Set hasSeasonPass.
+   * @notice Set inLeague.
    */
-  function set(address account, bool hasSeasonPass) internal {
+  function set(address account, bool inLeague) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(uint160(account)));
 
-    StoreSwitch.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((hasSeasonPass)), _fieldLayout);
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((inLeague)), _fieldLayout);
   }
 
   /**
-   * @notice Set hasSeasonPass.
+   * @notice Set inLeague.
    */
-  function _set(address account, bool hasSeasonPass) internal {
+  function _set(address account, bool inLeague) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(uint160(account)));
 
-    StoreCore.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((hasSeasonPass)), _fieldLayout);
+    StoreCore.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((inLeague)), _fieldLayout);
   }
 
   /**
@@ -200,8 +200,8 @@ library SeasonPass {
    * @notice Tightly pack static (fixed length) data using this table's schema.
    * @return The static data, encoded into a sequence of bytes.
    */
-  function encodeStatic(bool hasSeasonPass) internal pure returns (bytes memory) {
-    return abi.encodePacked(hasSeasonPass);
+  function encodeStatic(bool inLeague) internal pure returns (bytes memory) {
+    return abi.encodePacked(inLeague);
   }
 
   /**
@@ -210,8 +210,8 @@ library SeasonPass {
    * @return The lengths of the dynamic fields (packed into a single bytes32 value).
    * @return The dyanmic (variable length) data, encoded into a sequence of bytes.
    */
-  function encode(bool hasSeasonPass) internal pure returns (bytes memory, PackedCounter, bytes memory) {
-    bytes memory _staticData = encodeStatic(hasSeasonPass);
+  function encode(bool inLeague) internal pure returns (bytes memory, PackedCounter, bytes memory) {
+    bytes memory _staticData = encodeStatic(inLeague);
 
     PackedCounter _encodedLengths;
     bytes memory _dynamicData;

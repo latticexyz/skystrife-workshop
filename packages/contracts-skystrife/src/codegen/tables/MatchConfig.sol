@@ -26,10 +26,11 @@ ResourceId constant _tableId = ResourceId.wrap(
 ResourceId constant MatchConfigTableId = _tableId;
 
 FieldLayout constant _fieldLayout = FieldLayout.wrap(
-  0x0080040020202020000000000000000000000000000000000000000000000000
+  0x00a0050020202020200000000000000000000000000000000000000000000000
 );
 
 struct MatchConfigData {
+  uint256 registrationTime;
   uint256 startTime;
   uint256 turnLength;
   bytes32 levelId;
@@ -61,11 +62,12 @@ library MatchConfig {
    * @return _valueSchema The value schema for the table.
    */
   function getValueSchema() internal pure returns (Schema) {
-    SchemaType[] memory _valueSchema = new SchemaType[](4);
+    SchemaType[] memory _valueSchema = new SchemaType[](5);
     _valueSchema[0] = SchemaType.UINT256;
     _valueSchema[1] = SchemaType.UINT256;
-    _valueSchema[2] = SchemaType.BYTES32;
+    _valueSchema[2] = SchemaType.UINT256;
     _valueSchema[3] = SchemaType.BYTES32;
+    _valueSchema[4] = SchemaType.BYTES32;
 
     return SchemaLib.encode(_valueSchema);
   }
@@ -84,11 +86,12 @@ library MatchConfig {
    * @return fieldNames An array of strings with the names of value fields.
    */
   function getFieldNames() internal pure returns (string[] memory fieldNames) {
-    fieldNames = new string[](4);
-    fieldNames[0] = "startTime";
-    fieldNames[1] = "turnLength";
-    fieldNames[2] = "levelId";
-    fieldNames[3] = "createdBy";
+    fieldNames = new string[](5);
+    fieldNames[0] = "registrationTime";
+    fieldNames[1] = "startTime";
+    fieldNames[2] = "turnLength";
+    fieldNames[3] = "levelId";
+    fieldNames[4] = "createdBy";
   }
 
   /**
@@ -106,13 +109,55 @@ library MatchConfig {
   }
 
   /**
+   * @notice Get registrationTime.
+   */
+  function getRegistrationTime(bytes32 key) internal view returns (uint256 registrationTime) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = key;
+
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
+    return (uint256(bytes32(_blob)));
+  }
+
+  /**
+   * @notice Get registrationTime.
+   */
+  function _getRegistrationTime(bytes32 key) internal view returns (uint256 registrationTime) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = key;
+
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
+    return (uint256(bytes32(_blob)));
+  }
+
+  /**
+   * @notice Set registrationTime.
+   */
+  function setRegistrationTime(bytes32 key, uint256 registrationTime) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = key;
+
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((registrationTime)), _fieldLayout);
+  }
+
+  /**
+   * @notice Set registrationTime.
+   */
+  function _setRegistrationTime(bytes32 key, uint256 registrationTime) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = key;
+
+    StoreCore.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((registrationTime)), _fieldLayout);
+  }
+
+  /**
    * @notice Get startTime.
    */
   function getStartTime(bytes32 key) internal view returns (uint256 startTime) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
-    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 1, _fieldLayout);
     return (uint256(bytes32(_blob)));
   }
 
@@ -123,7 +168,7 @@ library MatchConfig {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
-    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 1, _fieldLayout);
     return (uint256(bytes32(_blob)));
   }
 
@@ -134,7 +179,7 @@ library MatchConfig {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
-    StoreSwitch.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((startTime)), _fieldLayout);
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 1, abi.encodePacked((startTime)), _fieldLayout);
   }
 
   /**
@@ -144,7 +189,7 @@ library MatchConfig {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
-    StoreCore.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((startTime)), _fieldLayout);
+    StoreCore.setStaticField(_tableId, _keyTuple, 1, abi.encodePacked((startTime)), _fieldLayout);
   }
 
   /**
@@ -154,7 +199,7 @@ library MatchConfig {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
-    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 1, _fieldLayout);
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 2, _fieldLayout);
     return (uint256(bytes32(_blob)));
   }
 
@@ -165,7 +210,7 @@ library MatchConfig {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
-    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 1, _fieldLayout);
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 2, _fieldLayout);
     return (uint256(bytes32(_blob)));
   }
 
@@ -176,7 +221,7 @@ library MatchConfig {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
-    StoreSwitch.setStaticField(_tableId, _keyTuple, 1, abi.encodePacked((turnLength)), _fieldLayout);
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked((turnLength)), _fieldLayout);
   }
 
   /**
@@ -186,7 +231,7 @@ library MatchConfig {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
-    StoreCore.setStaticField(_tableId, _keyTuple, 1, abi.encodePacked((turnLength)), _fieldLayout);
+    StoreCore.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked((turnLength)), _fieldLayout);
   }
 
   /**
@@ -196,7 +241,7 @@ library MatchConfig {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
-    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 2, _fieldLayout);
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 3, _fieldLayout);
     return (bytes32(_blob));
   }
 
@@ -207,7 +252,7 @@ library MatchConfig {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
-    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 2, _fieldLayout);
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 3, _fieldLayout);
     return (bytes32(_blob));
   }
 
@@ -218,7 +263,7 @@ library MatchConfig {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
-    StoreSwitch.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked((levelId)), _fieldLayout);
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 3, abi.encodePacked((levelId)), _fieldLayout);
   }
 
   /**
@@ -228,7 +273,7 @@ library MatchConfig {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
-    StoreCore.setStaticField(_tableId, _keyTuple, 2, abi.encodePacked((levelId)), _fieldLayout);
+    StoreCore.setStaticField(_tableId, _keyTuple, 3, abi.encodePacked((levelId)), _fieldLayout);
   }
 
   /**
@@ -238,7 +283,7 @@ library MatchConfig {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
-    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 3, _fieldLayout);
+    bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 4, _fieldLayout);
     return (bytes32(_blob));
   }
 
@@ -249,7 +294,7 @@ library MatchConfig {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
-    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 3, _fieldLayout);
+    bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 4, _fieldLayout);
     return (bytes32(_blob));
   }
 
@@ -260,7 +305,7 @@ library MatchConfig {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
-    StoreSwitch.setStaticField(_tableId, _keyTuple, 3, abi.encodePacked((createdBy)), _fieldLayout);
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 4, abi.encodePacked((createdBy)), _fieldLayout);
   }
 
   /**
@@ -270,7 +315,7 @@ library MatchConfig {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = key;
 
-    StoreCore.setStaticField(_tableId, _keyTuple, 3, abi.encodePacked((createdBy)), _fieldLayout);
+    StoreCore.setStaticField(_tableId, _keyTuple, 4, abi.encodePacked((createdBy)), _fieldLayout);
   }
 
   /**
@@ -306,8 +351,15 @@ library MatchConfig {
   /**
    * @notice Set the full data using individual values.
    */
-  function set(bytes32 key, uint256 startTime, uint256 turnLength, bytes32 levelId, bytes32 createdBy) internal {
-    bytes memory _staticData = encodeStatic(startTime, turnLength, levelId, createdBy);
+  function set(
+    bytes32 key,
+    uint256 registrationTime,
+    uint256 startTime,
+    uint256 turnLength,
+    bytes32 levelId,
+    bytes32 createdBy
+  ) internal {
+    bytes memory _staticData = encodeStatic(registrationTime, startTime, turnLength, levelId, createdBy);
 
     PackedCounter _encodedLengths;
     bytes memory _dynamicData;
@@ -321,8 +373,15 @@ library MatchConfig {
   /**
    * @notice Set the full data using individual values.
    */
-  function _set(bytes32 key, uint256 startTime, uint256 turnLength, bytes32 levelId, bytes32 createdBy) internal {
-    bytes memory _staticData = encodeStatic(startTime, turnLength, levelId, createdBy);
+  function _set(
+    bytes32 key,
+    uint256 registrationTime,
+    uint256 startTime,
+    uint256 turnLength,
+    bytes32 levelId,
+    bytes32 createdBy
+  ) internal {
+    bytes memory _staticData = encodeStatic(registrationTime, startTime, turnLength, levelId, createdBy);
 
     PackedCounter _encodedLengths;
     bytes memory _dynamicData;
@@ -337,7 +396,13 @@ library MatchConfig {
    * @notice Set the full data using the data struct.
    */
   function set(bytes32 key, MatchConfigData memory _table) internal {
-    bytes memory _staticData = encodeStatic(_table.startTime, _table.turnLength, _table.levelId, _table.createdBy);
+    bytes memory _staticData = encodeStatic(
+      _table.registrationTime,
+      _table.startTime,
+      _table.turnLength,
+      _table.levelId,
+      _table.createdBy
+    );
 
     PackedCounter _encodedLengths;
     bytes memory _dynamicData;
@@ -352,7 +417,13 @@ library MatchConfig {
    * @notice Set the full data using the data struct.
    */
   function _set(bytes32 key, MatchConfigData memory _table) internal {
-    bytes memory _staticData = encodeStatic(_table.startTime, _table.turnLength, _table.levelId, _table.createdBy);
+    bytes memory _staticData = encodeStatic(
+      _table.registrationTime,
+      _table.startTime,
+      _table.turnLength,
+      _table.levelId,
+      _table.createdBy
+    );
 
     PackedCounter _encodedLengths;
     bytes memory _dynamicData;
@@ -368,14 +439,20 @@ library MatchConfig {
    */
   function decodeStatic(
     bytes memory _blob
-  ) internal pure returns (uint256 startTime, uint256 turnLength, bytes32 levelId, bytes32 createdBy) {
-    startTime = (uint256(Bytes.slice32(_blob, 0)));
+  )
+    internal
+    pure
+    returns (uint256 registrationTime, uint256 startTime, uint256 turnLength, bytes32 levelId, bytes32 createdBy)
+  {
+    registrationTime = (uint256(Bytes.slice32(_blob, 0)));
 
-    turnLength = (uint256(Bytes.slice32(_blob, 32)));
+    startTime = (uint256(Bytes.slice32(_blob, 32)));
 
-    levelId = (Bytes.slice32(_blob, 64));
+    turnLength = (uint256(Bytes.slice32(_blob, 64)));
 
-    createdBy = (Bytes.slice32(_blob, 96));
+    levelId = (Bytes.slice32(_blob, 96));
+
+    createdBy = (Bytes.slice32(_blob, 128));
   }
 
   /**
@@ -389,7 +466,9 @@ library MatchConfig {
     PackedCounter,
     bytes memory
   ) internal pure returns (MatchConfigData memory _table) {
-    (_table.startTime, _table.turnLength, _table.levelId, _table.createdBy) = decodeStatic(_staticData);
+    (_table.registrationTime, _table.startTime, _table.turnLength, _table.levelId, _table.createdBy) = decodeStatic(
+      _staticData
+    );
   }
 
   /**
@@ -417,12 +496,13 @@ library MatchConfig {
    * @return The static data, encoded into a sequence of bytes.
    */
   function encodeStatic(
+    uint256 registrationTime,
     uint256 startTime,
     uint256 turnLength,
     bytes32 levelId,
     bytes32 createdBy
   ) internal pure returns (bytes memory) {
-    return abi.encodePacked(startTime, turnLength, levelId, createdBy);
+    return abi.encodePacked(registrationTime, startTime, turnLength, levelId, createdBy);
   }
 
   /**
@@ -432,12 +512,13 @@ library MatchConfig {
    * @return The dyanmic (variable length) data, encoded into a sequence of bytes.
    */
   function encode(
+    uint256 registrationTime,
     uint256 startTime,
     uint256 turnLength,
     bytes32 levelId,
     bytes32 createdBy
   ) internal pure returns (bytes memory, PackedCounter, bytes memory) {
-    bytes memory _staticData = encodeStatic(startTime, turnLength, levelId, createdBy);
+    bytes memory _staticData = encodeStatic(registrationTime, startTime, turnLength, levelId, createdBy);
 
     PackedCounter _encodedLengths;
     bytes memory _dynamicData;

@@ -22,6 +22,7 @@ import {
 } from "@latticexyz/common";
 import { Subject, share } from "rxjs";
 import IWorldAbi from "contracts-skystrife/out/world/IWorld.sol/IWorld.abi.json";
+import LeagueAbi from "contracts/out/IWorld.sol/IWorld.abi.json";
 import { getNetworkConfig } from "./getNetworkConfig";
 import { drip } from "./faucet";
 
@@ -34,8 +35,17 @@ import { drip } from "./faucet";
  * for the source of this information.
  */
 import mudConfig from "contracts-skystrife/mud.config";
+import wagerConfig from "contracts/mud.config";
+import { resolveConfig } from "@latticexyz/store";
 
 export type SetupNetworkResult = Awaited<ReturnType<typeof setupNetwork>>;
+
+const NAMESPACE = "League";
+const { tables: LeagueTables } = resolveConfig(wagerConfig);
+
+type ResolvedTablesPrefix = {
+  [Property in keyof typeof LeagueTables as `${typeof NAMESPACE}_${string & Property}`]: typeof LeagueTables[Property]
+};
 
 export async function setupNetwork() {
   const networkConfig = await getNetworkConfig();
@@ -73,7 +83,7 @@ export async function setupNetwork() {
    */
   const worldContract = createContract({
     address: networkConfig.worldAddress as Hex,
-    abi: IWorldAbi,
+    abi: [...IWorldAbi, ...LeagueAbi] as const,
     publicClient,
     walletClient,
     onWrite: (write) => write$.next(write),
@@ -92,6 +102,9 @@ export async function setupNetwork() {
       publicClient,
       indexerUrl: networkConfig.indexerUrl,
       startBlock: BigInt(networkConfig.initialBlockNumber),
+      tables: {
+        League_AccountInLeague: LeagueTables.AccountInLeague
+      } satisfies ResolvedTablesPrefix
     });
 
   /*
