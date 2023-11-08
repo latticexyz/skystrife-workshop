@@ -21,7 +21,7 @@ function Stats() {
 
   const counts = useStore((state) => {
     const records = state.getRecords(tables.MatchRanking);
-    const cs: { [key: Hex]: { won: number } } = {};
+    const cs: { [key: Hex]: { won: number; lost: number } } = {};
 
     Object.values(records).map((record) =>
       record.value.value.map((entity, i) => {
@@ -32,10 +32,12 @@ function Stats() {
 
         if (owner) {
           if (!(owner.value in cs)) {
-            cs[owner.value] = { won: 0 };
+            cs[owner.value] = { won: 0, lost: 0 };
           }
           if (i === 0) {
             cs[owner.value].won++;
+          } else if (i === record.value.value.length - 1) {
+            cs[owner.value].lost++;
           }
         }
       })
@@ -49,23 +51,27 @@ function Stats() {
 
   return (
     <div className="m-2">
-      <div className="text-3xl">Sky Strife leaderboard</div>
+      <div className="text-3xl">Sky Strife Player stats</div>
 
       <table className="w-full text-xl text-left text-gray-500 dark:text-gray-400">
         <thead className="text-lg text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
             <th>Player</th>
+            <th>W/L ratio</th>
             <th>Matches won</th>
+            <th>Matches lost</th>
           </tr>
         </thead>
         <tbody>
           {counts
-            ? counts.map(([key, { won }]) => (
+            ? counts.map(([key, { won, lost }]) => (
                 <tr key={key}>
                   <td>
                     <Player address={key as Hex} />
                   </td>
+                  <td>{won / lost}</td>
                   <td>{won}</td>
+                  <td>{lost}</td>
                 </tr>
               ))
             : "No ranking yet"}
