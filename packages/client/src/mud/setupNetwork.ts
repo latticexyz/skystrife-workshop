@@ -35,17 +35,9 @@ import { drip } from "./faucet";
  * for the source of this information.
  */
 import mudConfig from "contracts-skystrife/mud.config";
-import wagerConfig from "contracts/mud.config";
-import { resolveConfig } from "@latticexyz/store";
+import { getTables } from "./tables";
 
 export type SetupNetworkResult = Awaited<ReturnType<typeof setupNetwork>>;
-
-const NAMESPACE = "League";
-const { tables: LeagueTables } = resolveConfig(wagerConfig);
-
-type ResolvedTablesPrefix = {
-  [Property in keyof typeof LeagueTables as `${typeof NAMESPACE}_${string & Property}`]: typeof LeagueTables[Property]
-};
 
 export async function setupNetwork() {
   const networkConfig = await getNetworkConfig();
@@ -102,9 +94,7 @@ export async function setupNetwork() {
       publicClient,
       indexerUrl: networkConfig.indexerUrl,
       startBlock: BigInt(networkConfig.initialBlockNumber),
-      tables: {
-        League_AccountInLeague: LeagueTables.AccountInLeague
-      } satisfies ResolvedTablesPrefix
+      tables: getTables()
     });
 
   /*

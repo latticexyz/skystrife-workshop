@@ -101,12 +101,27 @@ function Stats() {
   );
 }
 
+function Admin() {
+  const {
+    network: { tables, useStore },
+  } = useMUD();
+
+  const admin = useStore((state) => state.getValue(tables.League_Admin, {}));
+
+  return (
+    <div>
+      <div className="text-3xl">Admin</div>
+      <div>{admin ? admin.account : null}</div>
+    </div>
+  );
+}
+
 function AddToLeague() {
   const {
     network: { tables, useStore, walletClient, worldContract },
   } = useMUD();
 
-  const [input, setInput] = useState("");
+  const [address, setAddress] = useState("");
 
   const accounts = useStore((state) =>
     state.getRecords(tables.League_AccountInLeague)
@@ -119,8 +134,8 @@ function AddToLeague() {
       <form onSubmit={(e) => e.preventDefault()} className="Search__form">
         <input
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          value={input}
-          onChange={(event) => setInput(event.target.value)}
+          value={address}
+          onChange={(event) => setAddress(event.target.value)}
           type="text"
           placeholder="0x..."
         />
@@ -130,7 +145,7 @@ function AddToLeague() {
             (record) => record.key.account === walletClient.account.address
           )}
           onClick={() =>
-            worldContract.write.League_JoinSystem_addLeague([input as Hex])
+            worldContract.write.League_JoinSystem_addLeague([address as Hex])
           }
         >
           Add to league
@@ -145,6 +160,7 @@ export function App() {
     <div>
       <Stats />
       <AddToLeague />
+      <Admin />
     </div>
   );
 }

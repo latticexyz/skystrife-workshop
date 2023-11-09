@@ -7,5 +7,9 @@ export default mudConfig({
       keySchema: { account: "address", },
       valueSchema: { inLeague: "bool" }
     },
+    Admin: {
+      keySchema: {},
+      valueSchema: { account: "address" }
+    },
   }
 })

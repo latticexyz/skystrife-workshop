@@ -8,11 +8,10 @@
     "build:abi": "forge build",
     "build:abi-ts": "mud abi-ts",
     "build:mud": "rimraf src/codegen && mud tablegen && mud worldgen",
-    "deploy:redstone": "pnpm run build && mud deploy --profile=redstone --worldAddress 0x6e9474e9c83676b9a71133ff96db43e7aa0a4342",
+    "deploy:redstone": "pnpm run build && mud deploy --profile=redstone --worldAddress 0x6e9474e9c83676b9a71133ff96db43e7aa0a4342 --alwaysRunPostDeploy",
     "lint": "pnpm run prettier && pnpm run solhint",
     "prettier": "prettier --write 'src/**/*.sol'",
-    "solhint": "solhint --config ./.solhint.json 'src/**/*.sol' --fix",
-    "setAdmin": "forge script script/setAdmin.s.sol --chain-id 17001 --rpc-url https://17001-follower.quarry.linfra.xyz"
+    "solhint": "solhint --config ./.solhint.json 'src/**/*.sol' --fix"
   },
   "dependencies": {
     "@latticexyz/cli": "2.0.0-main-161c1a85",
