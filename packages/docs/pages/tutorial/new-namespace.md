@@ -12,25 +12,39 @@ In the `contracts` folder there is a `mud.config.ts` file.
 
 <CollapseCode>
 
-```tsx filename="mud.config.ts" {8-16} copy showLineNumbers
+```tsx filename="mud.config.ts" {5-8} copy showLineNumbers
 import { mudConfig } from "@latticexyz/world/register";
 
 export default mudConfig({
-  enums: {
-    // TODO
-  },
   tables: {
-    Movable: "bool",
-    Player: "bool",
-    Position: {
-      dataStruct: false,
-      valueSchema: {
-        x: "uint32",
-        y: "uint32",
-      },
+    InLeague: {
+      keySchema: { account: "address" },
+      valueSchema: { inLeague: "bool" },
     },
   },
 });
+```
+
+</CollapseCode>
+
+## 1.2. Create the system
+
+Let's customise ` JoinSystem.sol` in `src/systems`. We add `joinLeague` method, which will assign the `InLeague`, tables to the given address.
+
+<CollapseCode>
+
+```tsx filename="mud.config.ts" {5, 8-10} copy showLineNumbers
+// SPDX-License-Identifier: MIT
+pragma solidity >=0.8.0;
+
+import { System } from "@latticexyz/world/src/System.sol";
+import { InLeague } from "../codegen/index.sol";
+
+contract JoinSystem is System {
+  function joinLeague(address account) public {
+    InLeague.set(account, true);
+  }
+}
 ```
 
 </CollapseCode>

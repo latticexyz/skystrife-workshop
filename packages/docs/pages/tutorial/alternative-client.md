@@ -56,7 +56,7 @@ export function App() {
 }
 ```
 
-## 1.2. Displayplayer names
+## 1.2. Display player names
 
 These are unreadable. Let's create a `Player` component that displays a player name given an address. We have to map over owners
 
