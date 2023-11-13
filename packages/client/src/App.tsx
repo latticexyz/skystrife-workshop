@@ -49,7 +49,7 @@ function Stats() {
           }
           if (i === 0) {
             cs[owner.value].won++;
-          } else if (i === record.value.value.length - 1) {
+          } else {
             cs[owner.value].lost++;
           }
         }
@@ -84,16 +84,19 @@ function Stats() {
         </thead>
         <tbody>
           {counts
-            ? counts.map(([key, { won, lost }]) => (
-                <tr key={key}>
-                  <td>
-                    <Player address={key as Hex} />
-                  </td>
-                  <td>{(won / lost).toString()}</td>
-                  <td>{won}</td>
-                  <td>{lost}</td>
-                </tr>
-              ))
+            ? counts.map(([key, { won, lost }]) => {
+                const ratio = won / (won + lost);
+                return (
+                  <tr key={key}>
+                    <td>
+                      <Player address={key as Hex} />
+                    </td>
+                    <td>{ratio.toString()}</td>
+                    <td>{won}</td>
+                    <td>{lost}</td>
+                  </tr>
+                );
+              })
             : "No ranking yet"}
         </tbody>
       </table>
