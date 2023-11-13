@@ -1,23 +1,26 @@
 import { CollapseCode } from "../../components/CollapseCode";
 
-# 1. New namespace
+# 2. Player leagues
 
 **In this section, we will accomplish the following:**
 
-1. Create our own namespace on an existing Sky Strife world with a `InLeague` table.
-2. Use a system to allow players to join the leauge
-3. Allow using the system on the client
+1. Create a new namespace on an existing Sky Strife World with an `InLeague` table.
+2. Add and remove players from `InLeague` with a system.
+3. Allow using the system on the client.
 
 ## 1.1. Creating the table
 
-In the `contracts` folder there is a `mud.config.ts` file.
+The `contracts` folder has a `mud.config.ts` file. This is where we specifiy our custom namespace and define the tables for our project. 
+
+We start by defining the table `InLeague` which determines which players are in the league. 
 
 <CollapseCode>
 
-```tsx filename="mud.config.ts" {5-8} copy showLineNumbers
+```tsx filename="mud.config.ts" {6-9} copy showLineNumbers
 import { mudConfig } from "@latticexyz/world/register";
 
 export default mudConfig({
+  namespace: "League",
   tables: {
     InLeague: {
       keySchema: { account: "address" },
@@ -29,7 +32,7 @@ export default mudConfig({
 
 </CollapseCode>
 
-## 1.2. Create the system
+## 1.2. Create the system and its methods
 
 Let's customise ` JoinSystem.sol` in `src/systems`. We add `joinLeague` method, which will assign the `InLeague` tables to the given address.
 
@@ -43,7 +46,7 @@ import { System } from "@latticexyz/world/src/System.sol";
 import { InLeague } from "../codegen/index.sol";
 
 contract JoinSystem is System {
-  function joinLeague(address account) public {
+  function addLeagueMember(address account) public {
     InLeague.set(account, true);
   }
 }
@@ -51,13 +54,15 @@ contract JoinSystem is System {
 
 </CollapseCode>
 
+Now, deploy the contracts!
+
 ## 1.3. Use the system on the client
 
 Let's display our league.
 
 <CollapseCode>
 
-```tsx filename="App.tsx" {} copy showLineNumbers
+```tsx filename="App.tsx" {16-39, 76} copy showLineNumbers
 import { useMUD } from "./MUDContext";
 import { Hex } from "viem";
 
@@ -141,11 +146,11 @@ export function App() {
 
 </CollapseCode>
 
-Oh no, the league is empty. Let's interact with the system to use it.
+Oh no, the league is empty. Let's interact with the system to use it. Note the prefix because this is a non-root system.
 
 <CollapseCode>
 
-```tsx filename="App.tsx" {16-34, 71} copy showLineNumbers
+```tsx filename="App.tsx" {1, 22, 30-44} copy showLineNumbers
 import { useState } from "react";
 import { useMUD } from "./MUDContext";
 import { Hex } from "viem";

@@ -1,0 +1,35 @@
+import { CollapseCode } from "../../components/CollapseCode";
+
+# 3. Restriction
+
+**In this section, we will accomplish the following:**
+
+1. Read a table on the MUD world on-chain
+
+## 1.1. Reading the table
+
+It's annoying that people can join our league without a name. Let's read the name from Sky Strife. We can read this like any other table.
+
+<CollapseCode>
+
+```solidity filename="JoinSystem.sol" {6, 10-11} copy showLineNumbers
+// SPDX-License-Identifier: MIT
+pragma solidity >=0.8.0;
+
+import { System } from "@latticexyz/world/src/System.sol";
+import { InLeague } from "../codegen/index.sol";
+import { Name } from "contracts-skystrife/src/codegen/index.sol";
+
+contract JoinSystem is System {
+  function joinLeague(address account) public {
+    string memory name = Name.get(_msgSender());
+    require(name.length != 0, "caller does not have a name");
+
+    InLeague.set(account, true);
+  }
+}
+```
+
+</CollapseCode>
+
+Then we can redeploy the contracts, and MUD will update the system.

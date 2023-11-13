@@ -1,5 +1,6 @@
 export default {
   "getting-started": "Getting started",
-  "alternative-client": "1. Alternative client",
-  "new-namespace": "2. New namespace"
+  "match-rankings": "1. Match rankings",
+  "player-leagues": "2. League",
+  "restriction": "3. Restriction"
 };

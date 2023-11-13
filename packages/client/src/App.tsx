@@ -1,63 +1,16 @@
-import { useState } from "react";
 import { useMUD } from "./MUDContext";
 import { Hex } from "viem";
-import { encodeEntity } from "@latticexyz/store-sync/recs";
 
-function Player({ address }: { address: Hex }) {
+function Player({ entity }: { entity: Hex }) {
   const {
     network: { tables, useStore },
   } = useMUD();
 
   const name = useStore((state) =>
-    state.getValue(tables.Name, { key: address })
+    state.getValue(tables.Name, { key: entity })
   );
 
-  return <span>{name ? name.value : address}</span>;
-}
-
-function League() {
-  const {
-    network: { tables, useStore, worldContract },
-  } = useMUD();
-
-  const [address, setAddress] = useState("");
-
-  const accounts = useStore((state) =>
-    state.getRecords(tables.League_InLeague)
-  );
-
-  return (
-    <div>
-      <form onSubmit={(e) => e.preventDefault()}>
-        <input
-          value={address}
-          onChange={(event) => setAddress(event.target.value)}
-          type="text"
-          placeholder="0x..."
-        />
-        <button
-          onClick={() =>
-            worldContract.write.League_JoinSystem_addLeague([address as Hex])
-          }
-        >
-          Add to league
-        </button>
-      </form>
-
-      {Object.values(accounts).map((record) =>
-        record.value.inLeague ? (
-          <div key={record.key.account}>
-            <Player
-              address={encodeEntity(
-                { address: "address" },
-                { address: record.key.account }
-              )}
-            />
-          </div>
-        ) : null
-      )}
-    </div>
-  );
+  return <span>{name ? name.value : entity}</span>;
 }
 
 export function App() {
@@ -67,11 +20,11 @@ export function App() {
 
   const rankings = useStore((state) => {
     return Object.values(state.getRecords(tables.MatchRanking)).map(
-      (record) => ({
-        matchEntity: record.key.key,
-        players: record.value.value.map((entity) => {
+      ({ key, value }) => ({
+        matchEntity: key.key,
+        players: value.value.map((entity) => {
           const owner = state.getValue(tables.OwnedBy, {
-            matchEntity: record.key.key,
+            matchEntity: key.key,
             entity,
           });
 
@@ -85,17 +38,19 @@ export function App() {
 
   return (
     <div>
+      <div className="text-xl">Rankings</div>
       {rankings.map(({ matchEntity, players }) => (
         <div key={matchEntity}>
-          Match #{matchEntity}:
+          <div key={matchEntity} className="text-lg">
+            Match #{matchEntity}:
+          </div>
           {players.map((address, i) => (
             <div key={`${matchEntity}_${address}`}>
-              {i + 1}: <Player address={address} />
+              {i + 1}: <Player entity={address} />
             </div>
           ))}
         </div>
       ))}
-      <League />
     </div>
   );
 }

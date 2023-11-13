@@ -94,7 +94,6 @@ export async function setupNetwork() {
       publicClient,
       indexerUrl: networkConfig.indexerUrl,
       startBlock: BigInt(networkConfig.initialBlockNumber),
-      tables: getTables()
     });
 
   /*
