@@ -156,11 +156,43 @@ function AddToLeague() {
 }
 
 export function App() {
+  const {
+    network: { tables, useStore },
+  } = useMUD();
+
+  const rankings = useStore((state) => {
+    return Object.values(state.getRecords(tables.MatchRanking)).map(
+      (record) => ({
+        record,
+        players: record.value.value.map((entity) => {
+          const owner = state.getValue(tables.OwnedBy, {
+            matchEntity: record.key.key,
+            entity,
+          });
+
+          if (owner) {
+            return owner.value;
+          }
+
+          return entity;
+        }),
+      })
+    );
+  });
+
   return (
     <div>
-      <Stats />
-      <AddToLeague />
-      <Admin />
+      <div>Rankings</div>
+      {rankings.map(({ record, players }) => (
+        <div key={record.key.key}>
+          Match #{record.key.key}:
+          {players.map((address) => (
+            <div key={`${record.key.key}_${address}`}>
+              <Player address={address} />,
+            </div>
+          ))}
+        </div>
+      ))}
     </div>
   );
 }
