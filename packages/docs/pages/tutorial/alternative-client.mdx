@@ -1,3 +1,5 @@
+import { CollapseCode } from "../../components/CollapseCode";
+
 # 1. Match rankings
 
 **In this section, we will accomplish the following:**
@@ -25,9 +27,13 @@ export default mudConfig({
 });
 ```
 
+</CollapseCode>
+
 This table tracks the ranking of players in a match. It is prepended to whenever a player's spawn is destroyed. The zeroth player in the array is 1st place.
 
 On the client, we modify `App.tsx` to use Zustand`useStore` to retrieve the records and map over them.
+
+<CollapseCode>
 
 ```tsx filename="App.tsx" {8, 12-21} copy showLineNumbers
 import { useMUD } from "./MUDContext";
@@ -56,24 +62,28 @@ export function App() {
 }
 ```
 
+</CollapseCode>
+
 ## 1.2. Display player names
 
-These are unreadable. Let's create a `Player` component that displays a player name given an address. We have to map over owners
+These addresses are unreadable. Let's create a `Player` component that displays a player name given an address. We have to map over owners
 
-```tsx filename="App.tsx" {4-14, 21-37, 44-48} copy showLineNumbers
+<CollapseCode>
+
+```tsx filename="App.tsx" {4-14, 21-37, 45-49} copy showLineNumbers
 import { useMUD } from "./MUDContext";
 import { Hex } from "viem";
 
-function Player({ address }: { address: Hex }) {
+function Player({ entity }: { entity: Hex }) {
   const {
     network: { tables, useStore },
   } = useMUD();
 
   const name = useStore((state) =>
-    state.getValue(tables.Name, { key: address })
+    state.getValue(tables.Name, { key: entity })
   );
 
-  return <span>{name ? name.value : address}</span>;
+  return <span>{name ? name.value : entity}</span>;
 }
 
 export function App() {
@@ -101,12 +111,13 @@ export function App() {
 
   return (
     <div>
+      <div>Rankings</div>
       {rankings.map(({ matchEntity, players }) => (
         <div key={matchEntity}>
           Match #{matchEntity}:
           {players.map((address, i) => (
             <div key={`${matchEntity}_${address}`}>
-              {i + 1}: <Player address={address} />
+              {i + 1}: <Player entity={address} />
             </div>
           ))}
         </div>
@@ -115,5 +126,7 @@ export function App() {
   );
 }
 ```
+
+</CollapseCode>
 
 Now that we read the Sky Strife namespace, let's build our own!

@@ -4,8 +4,6 @@ pragma solidity >=0.8.21;
 import { Script } from "forge-std/Script.sol";
 import { StoreSwitch } from "@latticexyz/store/src/StoreSwitch.sol";
 
-import { Admin } from "../src/codegen/index.sol";
-
 contract PostDeploy is Script {
   function run(address worldAddress) external {
     // Specify a store so that you can use tables directly in PostDeploy
@@ -18,7 +16,6 @@ contract PostDeploy is Script {
     vm.startBroadcast(deployerPrivateKey);
 
     address admin = vm.addr(deployerPrivateKey);
-    Admin.set(admin);
 
     vm.stopBroadcast();
   }
