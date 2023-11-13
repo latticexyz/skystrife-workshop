@@ -82,7 +82,7 @@ export async function setupNetwork() {
   });
 
   /*
-   * Sync on-chain state into RECS and keeps our client in sync.
+   * Sync on-chain state into zustand and keeps our client in sync.
    * Uses the MUD indexer if available, otherwise falls back
    * to the viem publicClient to make RPC calls to fetch MUD
    * events from the chain.
@@ -99,27 +99,13 @@ export async function setupNetwork() {
 
   /*
    * If there is a faucet, request (test) ETH if you have
-   * less than 1 ETH. Repeat every 20 seconds to ensure you don't
+   * less than 0.2 ETH. Repeat every 20 seconds to ensure you don't
    * run out.
    */
   if (networkConfig.faucetServiceUrl) {
     const { address } = account;
     console.info("[Dev Faucet]: Player address -> ", address);
-
-    const requestDrip = async () => {
-      const balance = await publicClient.getBalance({ address });
-      console.info(`[Dev Faucet]: Player balance -> ${balance} `);
-      const lowBalance = balance < parseEther("1");
-      if (lowBalance && networkConfig.faucetServiceUrl) {
-        console.info("[Dev Faucet]: Balance is low, dripping funds to player");
-        // Double drip
-        drip(address, networkConfig.faucetServiceUrl, publicClient);
-      }
-    };
-
-    requestDrip();
-    // Request a drip every 20 seconds
-    setInterval(requestDrip, 20000);
+    drip(address, networkConfig.faucetServiceUrl, publicClient);
   }
 
   return {

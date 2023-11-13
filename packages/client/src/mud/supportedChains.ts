@@ -17,12 +17,12 @@ export const redstone = {
     },
     rpcUrls: {
         default: {
-            http: ["https://17001-follower.quarry.linfra.xyz"],
-            webSocket: ["wss://17001-follower.quarry.linfra.xyz/ws"],
+            http: ["https://17001-proxyd.quarry.linfra.xyz"],
+            webSocket: ["wss://17001-proxyd.quarry.linfra.xyz/ws"],
         },
         public: {
-            http: ["https://17001-follower.quarry.linfra.xyz"],
-            webSocket: ["wss://17001-follower.quarry.linfra.xyz/ws"],
+            http: ["https://17001-proxyd.quarry.linfra.xyz"],
+            webSocket: ["wss://17001-proxyd.quarry.linfra.xyz/ws"],
         },
     },
     blockExplorers: {
@@ -32,7 +32,7 @@ export const redstone = {
         },
     },
     testnet: true,
-    indexerUrl: "https://17001-indexer.quarry.linfra.xyz/trpc"
+    indexerUrl: "https://17001-indexer-frontend.quarry.linfra.xyz/trpc"
 };
 
 // If you are deploying to chains other than anvil or Lattice testnet, add them here

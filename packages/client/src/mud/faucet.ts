@@ -12,7 +12,7 @@ export function drip(address: Hex, faucetServiceUrl: string, publicClient: Publi
       const balance = await publicClient.getBalance({ address });
       console.info(`[Dev Faucet]: Player balance -> ${balance}`);
 
-      if (balance < parseEther("1")) {
+      if (balance < parseEther("0.02")) {
         console.log("dripping");
         const tx = await faucet.drip.mutate({ address });
         console.log("got drip", tx);
