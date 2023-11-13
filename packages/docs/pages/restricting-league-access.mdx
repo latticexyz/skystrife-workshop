@@ -1,0 +1,36 @@
+import { CollapseCode } from "../components/CollapseCode";
+
+# 3. Restricting league access
+
+**In this section, we will accomplish the following:**
+
+1. Read the Sky Strife `Name` table in a system.
+
+## 3.1. Read the table
+
+Let's imagine we want to prevent accounts from joining the league without a username. Systems can read Sky Strife tables just like the tables in our namespace, by importing the table libraries.
+
+<CollapseCode>
+
+```solidity filename="LeagueManagementSystem.sol" {6, 10-11} copy showLineNumbers
+// SPDX-License-Identifier: MIT
+pragma solidity >=0.8.0;
+
+import { System } from "@latticexyz/world/src/System.sol";
+import { InLeague } from "../codegen/index.sol";
+import { Name } from "contracts-skystrife/src/codegen/index.sol";
+
+contract LeagueManagementSystem is System {
+  function addLeagueMember(address account) public {
+    string memory name = Name.get(_msgSender());
+    require(name.length != 0, "caller does not have a name");
+
+    InLeague.set(account, true);
+  }
+}
+
+```
+
+</CollapseCode>
+
+If we redeploy MUD will update the system.

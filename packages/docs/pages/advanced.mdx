@@ -1,0 +1,91 @@
+import { CollapseCode } from "../components/CollapseCode";
+
+# Advanced features
+
+## Ranking the players
+
+We can create a leaderboard by summing the wins and losses for each player, then calculating their win/loss ratio.
+
+<CollapseCode>
+
+```solidity filename="Leaderboard.sol" {11-39, 44-74} copy showLineNumbers
+import { Hex } from "viem";
+import { useMUD } from "./MUDContext";
+import { Place } from "./Place";
+import { Player } from "./Player";
+
+export function Leaderboard() {
+  const {
+    network: { tables, useStore },
+  } = useMUD();
+
+  const playerStats = useStore((state) => {
+    const records = state.getRecords(tables.MatchRanking);
+    const stats: { [key: Hex]: { won: number; lost: number } } = {};
+
+    Object.values(records).map((record) =>
+      record.value.value.map((entity, i) => {
+        const owner = state.getValue(tables.OwnedBy, {
+          matchEntity: record.key.key,
+          entity,
+        });
+
+        if (owner) {
+          if (!(owner.value in stats)) {
+            stats[owner.value] = { won: 0, lost: 0 };
+          }
+          if (i === 0) {
+            stats[owner.value].won++;
+          } else {
+            stats[owner.value].lost++;
+          }
+        }
+      })
+    );
+
+    const statsArray = Object.entries(stats);
+    statsArray.sort((a, b) => b[1].won - a[1].won);
+
+    return statsArray;
+  });
+
+  return (
+    <div className="m-1">
+      <div className="text-2xl">Leaderboard</div>
+      <table className="w-full text-xl text-left text-gray-500 dark:text-gray-400">
+        <thead className="text-lg text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <tr>
+            <th>Rank</th>
+            <th>Player</th>
+            <th>Matches won</th>
+            <th>Matches lost</th>
+            <th>W/L ratio</th>
+          </tr>
+        </thead>
+        <tbody>
+          {playerStats
+            ? playerStats.map(([key, { won, lost }], i) => {
+                const ratio = won / (won + lost);
+                return (
+                  <tr key={key}>
+                    <td>
+                      <Place index={i} />
+                    </td>
+                    <td>
+                      <Player entity={key as Hex} />
+                    </td>
+                    <td>{won}</td>
+                    <td>{lost}</td>
+                    <td>{ratio.toString()}</td>
+                  </tr>
+                );
+              })
+            : "No ranking yet"}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+```
+
+</CollapseCode>
