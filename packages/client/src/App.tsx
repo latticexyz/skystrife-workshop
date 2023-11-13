@@ -1,7 +1,29 @@
 import { toEthAddress } from "@latticexyz/utils";
 import { useMUD } from "./MUDContext";
 import { Hex } from "viem";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import mudConfig from "contracts-skystrife/mud.config";
+
+function DevTools() {
+  const { network } = useMUD();
+
+  useEffect(() => {
+    import("@latticexyz/dev-tools").then(({ mount: mountDevTools }) =>
+      mountDevTools({
+        config: mudConfig,
+        publicClient: network.publicClient,
+        walletClient: network.walletClient,
+        latestBlock$: network.latestBlock$,
+        storedBlockLogs$: network.storedBlockLogs$,
+        worldAddress: network.worldContract.address,
+        worldAbi: network.worldContract.abi,
+        write$: network.write$,
+      })
+    );
+  }, []);
+
+  return <></>;
+}
 
 function Player({ address }: { address: Hex }) {
   const {
@@ -159,11 +181,35 @@ function AddToLeague() {
 }
 
 export function App() {
+  const {
+    network: { useStore },
+  } = useMUD();
+
+  const syncProgress = useStore((state) => state.syncProgress);
+
+  console.log(syncProgress);
+
   return (
-    <div>
-      <Stats />
-      <AddToLeague />
-      <Admin />
-    </div>
+    <>
+      {syncProgress.percentage === 100 ? (
+        <div>
+          <Stats />
+          <AddToLeague />
+          <Admin />
+
+          <DevTools />
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-around h-screen">
+          <div>
+            <div className="text-3xl">
+              Syncing Sky Strife World:{" "}
+              <span className="text-blue-400">{syncProgress.percentage}%</span>
+            </div>
+            <div className="text-2xl">{syncProgress.message}</div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
