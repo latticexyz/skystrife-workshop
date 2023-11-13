@@ -1,15 +1,17 @@
 import { mudConfig } from "@latticexyz/world/register";
 
 export default mudConfig({
-  namespace: "League",
+  namespace: "League1",
   tables: {
     AccountInLeague: {
-      keySchema: { account: "address", },
-      valueSchema: { inLeague: "bool" }
+      keySchema: { account: "address" },
+      valueSchema: { inLeague: "bool" },
     },
-    Admin: {
-      keySchema: {},
-      valueSchema: { account: "address" }
+    Organiser: {
+      keySchema: {
+        account: "address",
+      },
+      valueSchema: { value: "bool" },
     },
-  }
-})
+  },
+});

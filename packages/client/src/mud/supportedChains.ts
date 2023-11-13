@@ -32,6 +32,7 @@ export const redstone = {
         },
     },
     testnet: true,
+    faucetUrl: "https://17001-faucet.quarry.linfra.xyz/trpc",
     indexerUrl: "https://17001-indexer-frontend.quarry.linfra.xyz/trpc"
 };
 

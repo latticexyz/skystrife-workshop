@@ -10,7 +10,6 @@ import {
   http,
   createWalletClient,
   Hex,
-  parseEther,
   ClientConfig,
 } from "viem";
 import { syncToZustand } from "@latticexyz/store-sync/zustand";
@@ -34,8 +33,9 @@ import { drip } from "./faucet";
  * See https://mud.dev/tutorials/walkthrough/minimal-onchain#mudconfigts
  * for the source of this information.
  */
-import mudConfig from "contracts-skystrife/mud.config";
-import { getTables } from "./tables";
+import mudConfig from "contracts/mud.config";
+import skyStrifeConfig from "contracts-skystrife/mud.config";
+import { resolveConfig } from "@latticexyz/store";
 
 export type SetupNetworkResult = Awaited<ReturnType<typeof setupNetwork>>;
 
@@ -94,7 +94,7 @@ export async function setupNetwork() {
       publicClient,
       indexerUrl: networkConfig.indexerUrl,
       startBlock: BigInt(networkConfig.initialBlockNumber),
-      tables: getTables()
+      tables: resolveConfig(skyStrifeConfig).tables,
     });
 
   /*
@@ -117,5 +117,6 @@ export async function setupNetwork() {
     storedBlockLogs$,
     worldContract,
     write$: write$.asObservable().pipe(share()),
+    config: networkConfig,
   };
 }

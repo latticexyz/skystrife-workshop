@@ -504,7 +504,20 @@
         "type": "address"
       }
     ],
-    "name": "League_JoinSystem_addLeague",
+    "name": "League1_LeagueManagement_addLeagueMember",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "League1_LeagueManagement_removeLeagueMember",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

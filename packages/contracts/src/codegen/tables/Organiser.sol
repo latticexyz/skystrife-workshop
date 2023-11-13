@@ -21,15 +21,15 @@ import { ResourceId } from "@latticexyz/store/src/ResourceId.sol";
 import { RESOURCE_TABLE, RESOURCE_OFFCHAIN_TABLE } from "@latticexyz/store/src/storeResourceTypes.sol";
 
 ResourceId constant _tableId = ResourceId.wrap(
-  bytes32(abi.encodePacked(RESOURCE_TABLE, bytes14("League"), bytes16("Admin")))
+  bytes32(abi.encodePacked(RESOURCE_TABLE, bytes14("League1"), bytes16("Organiser")))
 );
-ResourceId constant AdminTableId = _tableId;
+ResourceId constant OrganiserTableId = _tableId;
 
 FieldLayout constant _fieldLayout = FieldLayout.wrap(
-  0x0014010014000000000000000000000000000000000000000000000000000000
+  0x0001010001000000000000000000000000000000000000000000000000000000
 );
 
-library Admin {
+library Organiser {
   /**
    * @notice Get the table values' field layout.
    * @return _fieldLayout The field layout for the table.
@@ -43,7 +43,8 @@ library Admin {
    * @return _keySchema The key schema for the table.
    */
   function getKeySchema() internal pure returns (Schema) {
-    SchemaType[] memory _keySchema = new SchemaType[](0);
+    SchemaType[] memory _keySchema = new SchemaType[](1);
+    _keySchema[0] = SchemaType.ADDRESS;
 
     return SchemaLib.encode(_keySchema);
   }
@@ -54,7 +55,7 @@ library Admin {
    */
   function getValueSchema() internal pure returns (Schema) {
     SchemaType[] memory _valueSchema = new SchemaType[](1);
-    _valueSchema[0] = SchemaType.ADDRESS;
+    _valueSchema[0] = SchemaType.BOOL;
 
     return SchemaLib.encode(_valueSchema);
   }
@@ -64,7 +65,8 @@ library Admin {
    * @return keyNames An array of strings with the names of key fields.
    */
   function getKeyNames() internal pure returns (string[] memory keyNames) {
-    keyNames = new string[](0);
+    keyNames = new string[](1);
+    keyNames[0] = "account";
   }
 
   /**
@@ -73,7 +75,7 @@ library Admin {
    */
   function getFieldNames() internal pure returns (string[] memory fieldNames) {
     fieldNames = new string[](1);
-    fieldNames[0] = "account";
+    fieldNames[0] = "value";
   }
 
   /**
@@ -91,86 +93,95 @@ library Admin {
   }
 
   /**
-   * @notice Get account.
+   * @notice Get value.
    */
-  function getAccount() internal view returns (address account) {
-    bytes32[] memory _keyTuple = new bytes32[](0);
+  function getValue(address account) internal view returns (bool value) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(uint160(account)));
 
     bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
-    return (address(bytes20(_blob)));
+    return (_toBool(uint8(bytes1(_blob))));
   }
 
   /**
-   * @notice Get account.
+   * @notice Get value.
    */
-  function _getAccount() internal view returns (address account) {
-    bytes32[] memory _keyTuple = new bytes32[](0);
+  function _getValue(address account) internal view returns (bool value) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(uint160(account)));
 
     bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
-    return (address(bytes20(_blob)));
+    return (_toBool(uint8(bytes1(_blob))));
   }
 
   /**
-   * @notice Get account.
+   * @notice Get value.
    */
-  function get() internal view returns (address account) {
-    bytes32[] memory _keyTuple = new bytes32[](0);
+  function get(address account) internal view returns (bool value) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(uint160(account)));
 
     bytes32 _blob = StoreSwitch.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
-    return (address(bytes20(_blob)));
+    return (_toBool(uint8(bytes1(_blob))));
   }
 
   /**
-   * @notice Get account.
+   * @notice Get value.
    */
-  function _get() internal view returns (address account) {
-    bytes32[] memory _keyTuple = new bytes32[](0);
+  function _get(address account) internal view returns (bool value) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(uint160(account)));
 
     bytes32 _blob = StoreCore.getStaticField(_tableId, _keyTuple, 0, _fieldLayout);
-    return (address(bytes20(_blob)));
+    return (_toBool(uint8(bytes1(_blob))));
   }
 
   /**
-   * @notice Set account.
+   * @notice Set value.
    */
-  function setAccount(address account) internal {
-    bytes32[] memory _keyTuple = new bytes32[](0);
+  function setValue(address account, bool value) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(uint160(account)));
 
-    StoreSwitch.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((account)), _fieldLayout);
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((value)), _fieldLayout);
   }
 
   /**
-   * @notice Set account.
+   * @notice Set value.
    */
-  function _setAccount(address account) internal {
-    bytes32[] memory _keyTuple = new bytes32[](0);
+  function _setValue(address account, bool value) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(uint160(account)));
 
-    StoreCore.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((account)), _fieldLayout);
+    StoreCore.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((value)), _fieldLayout);
   }
 
   /**
-   * @notice Set account.
+   * @notice Set value.
    */
-  function set(address account) internal {
-    bytes32[] memory _keyTuple = new bytes32[](0);
+  function set(address account, bool value) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(uint160(account)));
 
-    StoreSwitch.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((account)), _fieldLayout);
+    StoreSwitch.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((value)), _fieldLayout);
   }
 
   /**
-   * @notice Set account.
+   * @notice Set value.
    */
-  function _set(address account) internal {
-    bytes32[] memory _keyTuple = new bytes32[](0);
+  function _set(address account, bool value) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(uint160(account)));
 
-    StoreCore.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((account)), _fieldLayout);
+    StoreCore.setStaticField(_tableId, _keyTuple, 0, abi.encodePacked((value)), _fieldLayout);
   }
 
   /**
    * @notice Delete all data for given keys.
    */
-  function deleteRecord() internal {
-    bytes32[] memory _keyTuple = new bytes32[](0);
+  function deleteRecord(address account) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(uint160(account)));
 
     StoreSwitch.deleteRecord(_tableId, _keyTuple);
   }
@@ -178,8 +189,9 @@ library Admin {
   /**
    * @notice Delete all data for given keys.
    */
-  function _deleteRecord() internal {
-    bytes32[] memory _keyTuple = new bytes32[](0);
+  function _deleteRecord(address account) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(uint160(account)));
 
     StoreCore.deleteRecord(_tableId, _keyTuple, _fieldLayout);
   }
@@ -188,8 +200,8 @@ library Admin {
    * @notice Tightly pack static (fixed length) data using this table's schema.
    * @return The static data, encoded into a sequence of bytes.
    */
-  function encodeStatic(address account) internal pure returns (bytes memory) {
-    return abi.encodePacked(account);
+  function encodeStatic(bool value) internal pure returns (bytes memory) {
+    return abi.encodePacked(value);
   }
 
   /**
@@ -198,8 +210,8 @@ library Admin {
    * @return The lengths of the dynamic fields (packed into a single bytes32 value).
    * @return The dyanmic (variable length) data, encoded into a sequence of bytes.
    */
-  function encode(address account) internal pure returns (bytes memory, PackedCounter, bytes memory) {
-    bytes memory _staticData = encodeStatic(account);
+  function encode(bool value) internal pure returns (bytes memory, PackedCounter, bytes memory) {
+    bytes memory _staticData = encodeStatic(value);
 
     PackedCounter _encodedLengths;
     bytes memory _dynamicData;
@@ -210,9 +222,22 @@ library Admin {
   /**
    * @notice Encode keys as a bytes32 array using this table's field layout.
    */
-  function encodeKeyTuple() internal pure returns (bytes32[] memory) {
-    bytes32[] memory _keyTuple = new bytes32[](0);
+  function encodeKeyTuple(address account) internal pure returns (bytes32[] memory) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(uint160(account)));
 
     return _keyTuple;
+  }
+}
+
+/**
+ * @notice Cast a value to a bool.
+ * @dev Boolean values are encoded as uint8 (1 = true, 0 = false), but Solidity doesn't allow casting between uint8 and bool.
+ * @param value The uint8 value to convert.
+ * @return result The boolean value.
+ */
+function _toBool(uint8 value) pure returns (bool result) {
+  assembly {
+    result := value
   }
 }
