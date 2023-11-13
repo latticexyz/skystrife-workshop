@@ -166,7 +166,10 @@ function Organiser() {
   return (
     <div>
       <div className="text-3xl">Organiser</div>
-      <div>You are {organiser && "not"} a League Organiser. </div>
+      <div>
+        You are {!organiser?.value && <span className="font-bold">not</span>} a
+        League Organiser.{" "}
+      </div>
     </div>
   );
 }
