@@ -13,10 +13,15 @@ export function Player({ entity }: { entity: Hex }) {
   const name = useStore((state) =>
     state.getValue(tables.Name, { key: entity })
   );
+  const inLeague = useStore((state) =>
+    state.getValue(tables.InLeague, { account: toEthAddress(entity) as Hex })
+  );
 
   return (
     <span
-      className="w-full"
+      className={`w-full ${
+        inLeague && inLeague.isMember ? "text-yellow-600" : null
+      }`}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
@@ -24,7 +29,8 @@ export function Player({ entity }: { entity: Hex }) {
         <span>{toEthAddress(entity)}</span>
       ) : (
         <span>{name ? name.value : toEthAddress(entity)}</span>
-      )}
+      )}{" "}
+      {inLeague && inLeague.isMember ? "👪" : null}
     </span>
   );
 }
