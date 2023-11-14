@@ -2,7 +2,10 @@
 pragma solidity >=0.8.0;
 
 import { System } from "@latticexyz/world/src/System.sol";
+import { InLeague } from "../codegen/index.sol";
 
 contract LeagueManagementSystem is System {
-  // TODO
+  function addLeagueMember(address account) public {
+    InLeague.set(account, true);
+  }
 }
