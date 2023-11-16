@@ -1,6 +1,5 @@
 import { SyncStep } from "@latticexyz/store-sync";
 import { useMUD } from "./MUDContext";
-import { AccountDetails } from "./AccountDetails";
 import { Dashboard } from "./Dashboard";
 
 export function App() {
@@ -13,16 +12,7 @@ export function App() {
   return (
     <>
       {syncProgress.step === SyncStep.LIVE ? (
-        <div>
-          <div className="flex flex-col h-screen justify-between">
-            <div>
-              <Dashboard />
-            </div>
-            <div>
-              <AccountDetails />
-            </div>
-          </div>
-        </div>
+        <Dashboard />
       ) : (
         <div className="flex flex-col items-center justify-around h-screen">
           <div>

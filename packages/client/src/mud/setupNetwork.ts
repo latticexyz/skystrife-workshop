@@ -18,6 +18,8 @@ import {
   createContract,
   transportObserver,
   ContractWrite,
+  hexToResource,
+  resourceToHex,
 } from "@latticexyz/common";
 import { resolveConfig } from "@latticexyz/store";
 import { Subject, share } from "rxjs";
@@ -95,6 +97,14 @@ export async function setupNetwork() {
       indexerUrl: networkConfig.indexerUrl,
       startBlock: BigInt(networkConfig.initialBlockNumber),
       tables: resolveConfig(skyStrifeConfig).tables,
+      filters: [
+        { tableId: resourceToHex({ type: "table", namespace: "", name: "MatchConfig" }) },
+        { tableId: resourceToHex({ type: "table", namespace: "", name: "LevelTemplates" }) },
+        { tableId: resourceToHex({ type: "table", namespace: "", name: "LevelPosition" }) },
+        { tableId: resourceToHex({ type: "table", namespace: "", name: "Position" }) },
+        { tableId: resourceToHex({ type: "table", namespace: "", name: "StructureType" }) },
+        { tableId: resourceToHex({ type: "offchainTable", namespace: "", name: "UnitType" }) },
+      ]
     });
 
   /*
